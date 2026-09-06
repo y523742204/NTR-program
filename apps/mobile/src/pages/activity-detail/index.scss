@@ -1,0 +1,250 @@
+.detail-page {
+  padding-bottom: calc(200px + var(--ntr-safe-bottom));
+}
+
+/* ---------- 头部 ---------- */
+.detail-hero {
+  padding: 26px;
+}
+
+.detail-hero__top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detail-hero__count {
+  margin-left: auto;
+  font-size: 26px;
+  color: var(--ntr-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.detail-hero__manage {
+  font-size: 24px;
+  color: var(--ntr-primary);
+}
+
+.detail-hero__title {
+  display: block;
+  margin: 20px 0 18px;
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--ntr-text);
+}
+
+.detail-hero__meta-row {
+  display: flex;
+  gap: 20px;
+  padding: 8px 0;
+}
+
+.detail-hero__meta-label {
+  width: 96px;
+  font-size: 25px;
+  color: var(--ntr-text-3);
+}
+
+.detail-hero__meta-value {
+  flex: 1;
+  font-size: 25px;
+  color: var(--ntr-text-2);
+}
+
+.detail-hero__note {
+  display: block;
+  margin-top: 16px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: var(--ntr-surface-2);
+  font-size: 24px;
+  color: var(--ntr-text-2);
+  line-height: 1.6;
+}
+
+/* ---------- 报名名单 ---------- */
+.detail-roster {
+  margin-top: 24px;
+  padding: 24px;
+}
+
+.detail-roster__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.detail-roster__item {
+  position: relative;
+  width: calc((100% - 60px) / 4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-roster__avatar {
+  width: 76px;
+  height: 76px;
+}
+
+.detail-roster__name {
+  font-size: 22px;
+  color: var(--ntr-text-2);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail-roster__remove {
+  position: absolute;
+  top: -6px;
+  right: -2px;
+  width: 36px;
+  height: 36px;
+  line-height: 30px;
+  text-align: center;
+  border-radius: 50%;
+  background: rgba(255, 92, 91, 0.16);
+  color: var(--ntr-danger);
+  font-size: 26px;
+}
+
+/* ---------- Tabs ---------- */
+.detail-tabs {
+  margin-top: 24px;
+}
+
+/* ---------- 赛程 ---------- */
+.detail-schedule {
+  margin-top: 20px;
+}
+
+.detail-rounds {
+  white-space: nowrap;
+  margin-bottom: 20px;
+}
+
+.detail-rounds__pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  padding: 0 26px;
+  margin-right: 14px;
+  border-radius: 999px;
+  background: var(--ntr-surface);
+  border: 2px solid var(--ntr-line);
+  color: var(--ntr-text-2);
+  font-size: 24px;
+}
+
+.detail-rounds__pill--active {
+  background: var(--ntr-primary-dim);
+  border-color: var(--ntr-primary);
+  color: var(--ntr-primary);
+}
+
+.detail-schedule__tip {
+  display: block;
+  font-size: 24px;
+  color: var(--ntr-text-3);
+  margin-bottom: 16px;
+}
+
+.detail-round {
+  margin-bottom: 24px;
+}
+
+.detail-round__title {
+  display: block;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ntr-accent);
+  margin-bottom: 14px;
+}
+
+.detail-match {
+  background: var(--ntr-surface);
+  border: 2px solid var(--ntr-line);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+
+.detail-match__meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.detail-match__court {
+  font-size: 22px;
+  color: var(--ntr-text-3);
+}
+
+.detail-match__time {
+  margin-left: auto;
+  font-size: 22px;
+  color: var(--ntr-text-3);
+}
+
+.detail-match__body {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.detail-match__side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-match__side--right {
+  justify-content: flex-end;
+}
+
+.detail-match__name {
+  font-size: 28px;
+  color: var(--ntr-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail-match__name--win {
+  color: var(--ntr-primary);
+  font-weight: 700;
+}
+
+.detail-match__score {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--ntr-text);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.detail-match__status {
+  margin-top: 12px;
+}
+
+/* ---------- 底部操作条 ---------- */
+.detail-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900;
+  padding: 20px 24px calc(20px + var(--ntr-safe-bottom));
+  background: rgba(10, 15, 13, 0.96);
+  border-top: 2px solid var(--ntr-line);
+}
+
+.detail-bar__main {
+  min-height: 92px;
+}

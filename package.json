@@ -1,0 +1,64 @@
+{
+  "name": "ntr-app",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.7.0",
+  "scripts": {
+    "build": "turbo run build",
+    "build:mobile:prod": "cross-env NO_UPDATE_NOTIFIER=1 NTR_API_BASE_URL=https://server.mojiekj.com pnpm --filter @ntr/mobile build:prod",
+    "build:mobile:dev": "cross-env NO_UPDATE_NOTIFIER=1 NTR_API_BASE_URL=https://test-server.mojiekj.com pnpm --filter @ntr/mobile build:prod",
+    "dev": "turbo run dev --parallel",
+    "dev:api": "pnpm --filter @ntr/api dev",
+    "dev:mobile": "pnpm --filter @ntr/mobile dev:weapp",
+    "dev:mobile:local": "NO_UPDATE_NOTIFIER=1 NTR_API_BASE_URL=http://127.0.0.1:3000 pnpm --filter @ntr/mobile dev:weapp",
+    "dev:mobile:test": "NO_UPDATE_NOTIFIER=1 NTR_API_BASE_URL=https://test-server.mojiekj.com pnpm --filter @ntr/mobile dev:weapp",
+    "dev:mobile:prod": "NO_UPDATE_NOTIFIER=1 NTR_API_BASE_URL=https://server.mojiekj.com pnpm --filter @ntr/mobile dev:weapp",
+    "deploy:api:prod": "bash scripts/promote-api-prod.sh",
+    "deploy:api:test": "bash scripts/deploy-api-test.sh",
+    "db:migrate": "pnpm --filter @ntr/api exec prisma migrate deploy && pnpm --filter @ntr/api prisma:generate",
+    "db:start": "docker compose up -d postgres",
+    "db:stop": "docker compose down",
+    "db:logs": "docker compose logs -f postgres",
+    "commit": "git cz",
+    "lint": "turbo run lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "turbo run typecheck",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@eslint/js": "^9.31.0",
+    "@types/node": "^22.13.1",
+    "commitizen": "^4.3.2",
+    "cz-git": "^1.13.1",
+    "eslint": "^9.31.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import-x": "^4.16.1",
+    "globals": "^16.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.4",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.37.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css,scss}": [
+      "prettier --write"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git"
+    }
+  },
+  "dependencies": {
+    "cross-env": "^10.1.0"
+  }
+}

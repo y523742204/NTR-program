@@ -1,0 +1,20 @@
+.time-field {
+  margin-bottom: 28px;
+
+  &__row {
+    display: flex;
+    gap: 20px;
+  }
+
+  &__item {
+    flex: 1;
+    height: 88px;
+    line-height: 88px;
+    text-align: center;
+    background: var(--ntr-surface);
+    border: 2px solid var(--ntr-line);
+    border-radius: 14px;
+    color: var(--ntr-text);
+    font-size: 30px;
+  }
+}

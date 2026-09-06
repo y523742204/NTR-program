@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2020",
+    "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "resolveJsonModule": false,
+    "types": ["@tarojs/taro"],
+    "paths": {
+      "@ntr/shared": ["../../packages/shared/dist/index.d.ts"]
+    }
+  },
+  "include": ["config/**/*.ts", "src/**/*.ts", "src/**/*.tsx"]
+}

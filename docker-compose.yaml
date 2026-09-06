@@ -1,0 +1,23 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: ntr-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ntr
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      TZ: Asia/Shanghai
+    ports:
+      - '5432:5432'
+    volumes:
+      - ntr-postgres18-data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d ntr']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  ntr-postgres18-data:

@@ -1,0 +1,10 @@
+.switch-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+
+  .ntr-field__label {
+    margin-bottom: 0;
+  }
+}

@@ -1,0 +1,321 @@
+/* ===== NTR 暗色竞技风设计系统 ===== */
+page {
+  --ntr-bg: #0a0f0d;
+  --ntr-surface: #131b18;
+  --ntr-surface-2: #1a2622;
+  --ntr-line: #22312b;
+  --ntr-primary: #35e69c;
+  --ntr-primary-dim: rgba(53, 230, 156, 0.12);
+  --ntr-accent: #d8ff3e;
+  --ntr-danger: #ff5c5b;
+  --ntr-warn: #ffc53d;
+  --ntr-text: #eef7f2;
+  --ntr-text-2: #9fb8ac;
+  --ntr-text-3: #68857a;
+  --ntr-safe-bottom: env(safe-area-inset-bottom);
+
+  min-height: 100%;
+  background: var(--ntr-bg);
+  color: var(--ntr-text);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 28px;
+  line-height: 1.5;
+}
+
+view,
+text,
+button,
+input {
+  box-sizing: border-box;
+}
+
+/* ---------- 布局 ---------- */
+.ntr-page {
+  min-height: 100vh;
+  padding: 24px 24px calc(48px + var(--ntr-safe-bottom));
+}
+
+.ntr-section {
+  margin-top: 24px;
+}
+
+.ntr-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.ntr-section-title__text {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--ntr-text);
+  position: relative;
+  padding-left: 20px;
+}
+
+.ntr-section-title__text::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 6px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, var(--ntr-primary), var(--ntr-accent));
+}
+
+.ntr-section-title__extra {
+  font-size: 24px;
+  color: var(--ntr-text-3);
+}
+
+/* ---------- 卡片 ---------- */
+.ntr-card {
+  background: var(--ntr-surface);
+  border: 2px solid var(--ntr-line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.ntr-card--padded {
+  padding: 24px;
+}
+
+/* ---------- 按钮 ---------- */
+.ntr-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88px;
+  border-radius: 16px;
+  font-size: 32px;
+  font-weight: 600;
+  border: none;
+  padding: 0 32px;
+  line-height: 1;
+}
+
+.ntr-btn::after {
+  border: none;
+}
+
+.ntr-btn--primary {
+  background: linear-gradient(135deg, var(--ntr-primary), #2bc98a);
+  color: #06120c;
+}
+
+.ntr-btn--ghost {
+  background: transparent;
+  border: 2px solid var(--ntr-line);
+  color: var(--ntr-text-2);
+}
+
+.ntr-btn--danger {
+  background: transparent;
+  border: 2px solid rgba(255, 92, 91, 0.4);
+  color: var(--ntr-danger);
+}
+
+.ntr-btn--sm {
+  display: inline-flex;
+  height: 60px;
+  padding: 0 24px;
+  font-size: 26px;
+  border-radius: 12px;
+}
+
+.ntr-btn[disabled] {
+  opacity: 0.5;
+}
+
+/* ---------- 徽标 ---------- */
+.ntr-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 16px;
+  border-radius: 999px;
+  font-size: 22px;
+  line-height: 1.6;
+}
+
+.ntr-tag--primary {
+  background: var(--ntr-primary-dim);
+  color: var(--ntr-primary);
+}
+
+.ntr-tag--accent {
+  background: rgba(216, 255, 62, 0.12);
+  color: var(--ntr-accent);
+}
+
+.ntr-tag--muted {
+  background: rgba(104, 133, 122, 0.16);
+  color: var(--ntr-text-2);
+}
+
+.ntr-tag--danger {
+  background: rgba(255, 92, 91, 0.12);
+  color: var(--ntr-danger);
+}
+
+.ntr-tag--warn {
+  background: rgba(255, 197, 61, 0.12);
+  color: var(--ntr-warn);
+}
+
+/* ---------- 分段控件 ---------- */
+.ntr-seg {
+  display: flex;
+  background: var(--ntr-surface);
+  border: 2px solid var(--ntr-line);
+  border-radius: 14px;
+  padding: 6px;
+}
+
+.ntr-seg__item {
+  flex: 1;
+  text-align: center;
+  height: 64px;
+  line-height: 64px;
+  font-size: 26px;
+  color: var(--ntr-text-2);
+  border-radius: 10px;
+}
+
+.ntr-seg__item--active {
+  background: var(--ntr-primary-dim);
+  color: var(--ntr-primary);
+  font-weight: 700;
+}
+
+/* ---------- 表单 ---------- */
+.ntr-field {
+  margin-bottom: 28px;
+}
+
+.ntr-field__label {
+  font-size: 26px;
+  color: var(--ntr-text-2);
+  margin-bottom: 12px;
+}
+
+.ntr-input,
+.ntr-textarea {
+  width: 100%;
+  background: var(--ntr-surface);
+  border: 2px solid var(--ntr-line);
+  border-radius: 14px;
+  color: var(--ntr-text);
+  font-size: 30px;
+  padding: 20px 24px;
+}
+
+.ntr-textarea {
+  min-height: 160px;
+}
+
+.ntr-input__placeholder {
+  color: var(--ntr-text-3);
+}
+
+/* ---------- 列表行 ---------- */
+.ntr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 24px;
+  background: var(--ntr-surface);
+  border-bottom: 2px solid var(--ntr-line);
+}
+
+.ntr-row__label {
+  font-size: 28px;
+  color: var(--ntr-text);
+}
+
+.ntr-row__value {
+  font-size: 28px;
+  color: var(--ntr-text-2);
+}
+
+.ntr-row + .ntr-row:last-child {
+  border-bottom: none;
+}
+
+/* ---------- 文本 ---------- */
+.ntr-text-2 {
+  color: var(--ntr-text-2);
+}
+
+.ntr-text-3 {
+  color: var(--ntr-text-3);
+}
+
+.ntr-text-danger {
+  color: var(--ntr-danger);
+}
+
+.ntr-text-primary {
+  color: var(--ntr-primary);
+}
+
+.ntr-h1 {
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--ntr-text);
+}
+
+.ntr-h2 {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--ntr-text);
+}
+
+/* ---------- 头像 ---------- */
+.ntr-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--ntr-surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ntr-primary);
+  font-weight: 700;
+  font-size: 30px;
+  overflow: hidden;
+}
+
+.ntr-avatar image {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- 分隔线 ---------- */
+.ntr-divider {
+  height: 2px;
+  background: var(--ntr-line);
+  margin: 24px 0;
+}
+
+/* ---------- 空状态 ---------- */
+.ntr-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120px 40px;
+  color: var(--ntr-text-3);
+}
+
+.ntr-empty__icon {
+  font-size: 80px;
+  margin-bottom: 24px;
+  opacity: 0.6;
+}
+
+.ntr-empty__text {
+  font-size: 26px;
+  color: var(--ntr-text-3);
+}

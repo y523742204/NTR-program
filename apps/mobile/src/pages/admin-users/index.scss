@@ -1,0 +1,85 @@
+.au-summary {
+  display: flex;
+  align-items: center;
+  padding: 30px 0;
+}
+
+.au-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.au-stat__num {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--ntr-primary);
+}
+
+.au-stat__num--accent {
+  color: var(--ntr-accent);
+}
+
+.au-stat__label {
+  margin-top: 10px;
+  font-size: 24px;
+}
+
+.au-stat__divider {
+  width: 2px;
+  height: 64px;
+  background: var(--ntr-line);
+}
+
+.au-search {
+  margin: 20px 0 16px;
+}
+
+.au-user__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.au-user__avatar {
+  flex: none;
+}
+
+.au-user__info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.au-user__line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.au-user__name {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--ntr-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.au-user__date {
+  font-size: 22px;
+}
+
+.au-user__action {
+  flex: none;
+}
+
+.au-list__foot {
+  padding: 20px 0 8px;
+  text-align: center;
+}

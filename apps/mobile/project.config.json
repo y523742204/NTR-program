@@ -1,0 +1,45 @@
+{
+  "miniprogramRoot": "dist/weapp/",
+  "projectname": "ntr-mobile",
+  "description": "ntr Taro app",
+  "appid": "wx21c4f47015243178",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "compileHotReLoad": false,
+    "postcss": true,
+    "minified": true,
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "compileType": "miniprogram",
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "suffix",
+        "value": ".d.ts"
+      }
+    ],
+    "include": []
+  },
+  "editorSetting": {},
+  "libVersion": "3.16.2"
+}

@@ -1,0 +1,44 @@
+.stepper-field {
+  margin-bottom: 28px;
+
+  &__control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 88px;
+    padding: 0 20px;
+    background: var(--ntr-surface);
+    border: 2px solid var(--ntr-line);
+    border-radius: 14px;
+  }
+
+  &__btn {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--ntr-surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 44px;
+    line-height: 1;
+    color: var(--ntr-primary);
+
+    &--disabled {
+      opacity: 0.35;
+    }
+  }
+
+  &__value {
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--ntr-text);
+  }
+
+  &__suffix {
+    margin-left: 8px;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--ntr-text-3);
+  }
+}

@@ -1,0 +1,138 @@
+.index-page {
+  padding-top: 16px;
+}
+
+.index-hero {
+  margin-bottom: 28px;
+}
+
+.index-hero__logo {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+
+.index-hero__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.index-hero__brand-ntr {
+  font-size: 68px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  background: linear-gradient(135deg, var(--ntr-primary) 0%, var(--ntr-accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.index-hero__brand-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ntr-accent);
+  box-shadow: 0 0 18px rgba(216, 255, 62, 0.8);
+}
+
+.index-hero__tagline {
+  font-size: 24px;
+  color: var(--ntr-text-3);
+}
+
+.index-hero__line {
+  margin-top: 18px;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--ntr-primary), rgba(53, 230, 156, 0.05) 55%);
+}
+
+.index-filters__row {
+  margin-bottom: 16px;
+}
+
+.index-list {
+  margin-top: 24px;
+}
+
+.index-list__foot {
+  text-align: center;
+  padding: 28px 0 12px;
+}
+
+/* ---------- 赛事卡片 ---------- */
+.act-card {
+  background: var(--ntr-surface);
+  border: 2px solid var(--ntr-line);
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.act-card__top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.act-card__published {
+  margin-left: 0;
+}
+
+.act-card__count {
+  margin-left: auto;
+  font-size: 26px;
+  color: var(--ntr-text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.act-card__count--full {
+  color: var(--ntr-accent);
+}
+
+.act-card__title {
+  display: block;
+  margin: 18px 0 14px;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--ntr-text);
+}
+
+.act-card__meta {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.act-card__meta-icon {
+  width: 36px;
+  font-size: 24px;
+  color: var(--ntr-primary);
+  margin-right: 8px;
+}
+
+.act-card__meta-text {
+  flex: 1;
+  font-size: 25px;
+  color: var(--ntr-text-2);
+}
+
+.act-card__meta-courts {
+  font-size: 24px;
+  color: var(--ntr-text-3);
+}
+
+.act-card__progress {
+  margin-top: 16px;
+  height: 8px;
+  border-radius: 8px;
+  background: var(--ntr-surface-2);
+  overflow: hidden;
+}
+
+.act-card__progress-inner {
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--ntr-primary), var(--ntr-accent));
+}

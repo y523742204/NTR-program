@@ -1,0 +1,121 @@
+.score-dialog__mask {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: flex-end;
+}
+
+.score-dialog {
+  width: 100%;
+  background: var(--ntr-surface);
+  border-radius: 28px 28px 0 0;
+  padding: 32px 28px calc(40px + var(--ntr-safe-bottom));
+}
+
+.score-dialog__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.score-dialog__title {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--ntr-text);
+}
+
+.score-dialog__rule {
+  font-size: 24px;
+  color: var(--ntr-text-3);
+}
+
+.score-dialog__matchup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 20px;
+}
+
+.score-dialog__player {
+  flex: 1;
+  text-align: center;
+}
+
+.score-dialog__name {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--ntr-text);
+}
+
+.score-dialog__vs {
+  font-size: 26px;
+  color: var(--ntr-primary);
+}
+
+.score-dialog__status {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.score-dialog__inputs {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.score-dialog__input-box {
+  flex: 1;
+}
+
+.score-dialog__input-label {
+  display: block;
+  text-align: center;
+  font-size: 24px;
+  color: var(--ntr-text-2);
+  margin-bottom: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.score-dialog__game {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 700;
+  padding: 12px 0;
+}
+
+.score-dialog__colon {
+  color: var(--ntr-text-3);
+  font-size: 32px;
+}
+
+.score-dialog__inputs--tb {
+  margin-top: 20px;
+}
+
+.score-dialog__actions {
+  margin-top: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.score-dialog__actions .ntr-btn {
+  flex: 1;
+  min-width: 200px;
+}
+
+.score-dialog__readonly {
+  flex: 1;
+  text-align: center;
+}
+
+.score-dialog__close {
+  margin-top: 16px;
+}

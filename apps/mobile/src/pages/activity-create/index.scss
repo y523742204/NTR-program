@@ -1,0 +1,27 @@
+.activity-create {
+  &__mode-tip {
+    display: block;
+    margin-top: 20px;
+    font-size: 24px;
+    color: var(--ntr-text-3);
+  }
+
+  &__map-btn {
+    height: 76px;
+    margin-bottom: 28px;
+  }
+
+  &__picker {
+    height: 88px;
+    line-height: 88px;
+    padding: 0 24px;
+  }
+
+  &__submit {
+    margin-top: 40px;
+  }
+
+  &__submit--disabled {
+    opacity: 0.5;
+  }
+}

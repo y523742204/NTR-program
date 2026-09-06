@@ -1,0 +1,23 @@
+.profile-detail-avatar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 8px;
+}
+
+.profile-detail-avatar {
+  width: 128px;
+  height: 128px;
+  font-size: 44px;
+  flex-shrink: 0;
+}
+
+.profile-detail-avatar__hint {
+  font-size: 26px;
+  color: var(--ntr-text-3);
+  line-height: 1.6;
+}
+
+.profile-detail-save {
+  margin-top: 48px;
+}

@@ -1,0 +1,55 @@
+.signups-list {
+  margin-top: 4px;
+}
+
+.signups-list__foot {
+  padding: 24px 0 8px;
+  text-align: center;
+}
+
+.sr-card {
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+
+.sr-card__head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sr-card__title {
+  display: block;
+  margin: 16px 0 14px;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--ntr-text);
+}
+
+.sr-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 24px;
+  color: var(--ntr-text-2);
+}
+
+.sr-card__meta-icon {
+  color: var(--ntr-text-3);
+}
+
+.sr-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 2px solid var(--ntr-line);
+}
+
+.sr-card__go {
+  font-size: 24px;
+  color: var(--ntr-primary);
+}

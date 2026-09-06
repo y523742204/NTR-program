@@ -1,0 +1,97 @@
+.am-page {
+  padding-bottom: calc(60px + var(--ntr-safe-bottom));
+}
+
+/* ---------- 头部 ---------- */
+.am-head {
+  padding: 24px;
+}
+
+.am-head__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.am-head__title {
+  flex: 1;
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--ntr-text);
+}
+
+.am-head__count {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.am-head__stat {
+  font-size: 26px;
+  color: var(--ntr-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 区块 ---------- */
+.am-section {
+  margin-top: 24px;
+  padding: 24px;
+}
+
+.am-empty {
+  display: block;
+  padding: 32px 0;
+  text-align: center;
+}
+
+/* ---------- 报名行列 ---------- */
+.am-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 0;
+  border-bottom: 2px solid var(--ntr-line);
+}
+
+.am-row:last-child {
+  border-bottom: none;
+}
+
+.am-row__name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.am-row__text {
+  font-size: 28px;
+  color: var(--ntr-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- 赛程操作 ---------- */
+.am-action {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.am-published {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0 4px;
+}
+
+.am-overview {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  font-size: 25px;
+}

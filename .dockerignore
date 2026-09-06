@@ -1,0 +1,20 @@
+.git
+.cache
+.pnpm-store
+.turbo
+node_modules
+dist
+build
+coverage
+uploads
+.env
+.env.local
+apps/mobile
+apps/api/dist
+apps/api/src/generated
+packages/shared/dist
+# 本地 Windows junction 会被 docker 打包为空目录并覆盖容器内 Linux 链接
+apps/api/node_modules
+packages/shared/node_modules
+*.log
+**/*.tsbuildinfo
