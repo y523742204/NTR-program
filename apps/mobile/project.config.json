@@ -2,7 +2,7 @@
   "miniprogramRoot": "dist/weapp/",
   "projectname": "ntr-mobile",
   "description": "ntr Taro app",
-  "appid": "wx21c4f47015243178",
+  "appid": "wx633a36cd7c0e751f",
   "setting": {
     "urlCheck": false,
     "es6": true,
