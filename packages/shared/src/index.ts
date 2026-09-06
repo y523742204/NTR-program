@@ -105,8 +105,8 @@ export function getKnockoutStages(qualifierCount: number): MatchStage[] {
   }
   const depth = Math.log2(qualifierCount);
   const stages: MatchStage[] = [];
-  for (let d = 0; d <= depth; d += 1) {
-    stages.unshift(KNOCKOUT_STAGE_ORDER[KNOCKOUT_STAGE_ORDER.length - 1 - d]);
+  for (let d = depth - 1; d >= 0; d -= 1) {
+    stages.push(KNOCKOUT_STAGE_ORDER[KNOCKOUT_STAGE_ORDER.length - 1 - d]);
   }
   return stages;
 }
@@ -214,11 +214,19 @@ export function getSinglesScoreError(
     };
   }
   const lead = Math.abs(gamesA - gamesB) >= rule.majorLead;
+  if (rule.majorLead === 1) {
+    const winner = Math.max(gamesA, gamesB);
+    const loser = Math.min(gamesA, gamesB);
+    if (winner === rule.targetGames && loser === 0) {
+      return { ok: true, message: '', completed: true, winnerSide: gamesA > gamesB ? 'A' : 'B' };
+    }
+    return { ok: true, message: '', completed: false, winnerSide: null };
+  }
   const reachedTarget =
     gamesA >= rule.targetGames && gamesB >= rule.targetGames
       ? true
       : Math.max(gamesA, gamesB) >= rule.targetGames;
-  if (reachedTarget && lead) {
+  if (reachedTarget && lead && Math.min(gamesA, gamesB) < rule.targetGames) {
     return { ok: true, message: '', completed: true, winnerSide: gamesA > gamesB ? 'A' : 'B' };
   }
   return {
@@ -337,8 +345,7 @@ export function buildKnockoutPairs(seeds: readonly string[]): {
   const pairs: { stage: MatchStage; slot: number; seedA: string; seedB: string | null }[] = [];
   const half = size / 2;
   for (let i = 0; i < half; i += 1) {
-    const seedB = i === half - 1 - i ? null : seeds[half - 1 - i];
-    pairs.push({ stage: initialStage, slot: i, seedA: seeds[i], seedB });
+    pairs.push({ stage: initialStage, slot: i, seedA: seeds[i], seedB: seeds[size - 1 - i] });
   }
   return pairs;
 }
