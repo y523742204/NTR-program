@@ -1,6 +1,25 @@
 .login-brand {
+  position: relative;
   padding: 96px 0 72px;
   text-align: center;
+}
+
+.login-brand::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 40px;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(47, 191, 127, 0.16) 0%, transparent 70%);
+}
+
+.login-brand__ntr,
+.login-brand__tagline {
+  position: relative;
+  z-index: 1;
 }
 
 .login-brand__ntr {

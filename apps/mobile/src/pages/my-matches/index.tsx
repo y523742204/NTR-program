@@ -1,5 +1,6 @@
 import Taro, { useDidShow, useReachBottom } from '@tarojs/taro';
 import { Text, View } from '@tarojs/components';
+import { Clock, Location } from '@taroify/icons';
 import { useCallback, useState } from 'react';
 
 import type { MyMatchItemResponse, MyMatchListResponse } from '@ntr/shared';
@@ -76,9 +77,17 @@ function MatchCard({ match }: { match: MyMatchItemResponse }) {
       </View>
       <View className="rec-card__foot">
         <View className="rec-card__meta">
-          {match.courtName && <Text className="rec-card__meta-item">◎ {match.courtName}</Text>}
+          {match.courtName && (
+            <View className="rec-card__meta-item">
+              <Location className="rec-card__meta-icon" size="20" />
+              <Text>{match.courtName}</Text>
+            </View>
+          )}
           {match.startAt && (
-            <Text className="rec-card__meta-item">◷ {match.startAt.slice(11, 16)}</Text>
+            <View className="rec-card__meta-item">
+              <Clock className="rec-card__meta-icon" size="20" />
+              <Text>{match.startAt.slice(11, 16)}</Text>
+            </View>
           )}
         </View>
         {status && <Text className={`ntr-tag ${status.tone}`}>{status.text}</Text>}

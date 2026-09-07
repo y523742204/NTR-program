@@ -37,7 +37,7 @@
 }
 
 .sr-card__meta-icon {
-  color: var(--ntr-text-3);
+  color: var(--ntr-primary);
 }
 
 .sr-card__foot {
@@ -46,10 +46,13 @@
   justify-content: space-between;
   margin-top: 14px;
   padding-top: 14px;
-  border-top: 2px solid var(--ntr-line);
+  border-top: 1px solid var(--ntr-line);
 }
 
 .sr-card__go {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 24px;
   color: var(--ntr-primary);
 }

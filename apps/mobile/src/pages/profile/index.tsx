@@ -1,5 +1,6 @@
 import Taro, { useDidShow } from '@tarojs/taro';
 import { Image, Text, View } from '@tarojs/components';
+import { ArrowRight, Edit, Manager, Medal, Records, TodoList } from '@taroify/icons';
 import { useCallback, useState } from 'react';
 
 import type { AuthUserResponse } from '@ntr/shared';
@@ -12,7 +13,7 @@ import {
   subscribeAuthSession,
 } from '../../services/auth-session';
 import { refreshCurrentUser } from '../../services/current-user';
-import { HOME_TABS, switchHomeTab } from '../../services/tab-navigation';
+import { HOME_TABS, isHomeTabRoute, switchHomeTab } from '../../services/tab-navigation';
 
 import './index.scss';
 
@@ -35,6 +36,10 @@ export default function ProfilePage() {
   const maskedPhone = user ? `${user.phone.slice(0, 3)}****${user.phone.slice(-4)}` : '';
 
   function go(url: string) {
+    if (isHomeTabRoute(url)) {
+      void switchHomeTab(url);
+      return;
+    }
     void Taro.navigateTo({ url });
   }
 
@@ -66,19 +71,19 @@ export default function ProfilePage() {
   }
 
   const featureGrid = [
-    { label: '报名记录', icon: '▤', url: '/pages/signup-records/index' },
-    { label: '我的战绩', icon: '◆', url: '/pages/my-matches/index' },
+    { label: '报名记录', icon: Records, url: '/pages/signup-records/index' },
+    { label: '我的战绩', icon: Medal, url: '/pages/my-matches/index' },
   ];
 
   const adminRows = [
-    { label: '发布赛事', url: '/pages/activity-create/index' },
-    { label: '用户管理', url: '/pages/admin-users/index' },
-    { label: '赛事列表', url: HOME_TABS.activities },
+    { label: '发布赛事', icon: Edit, url: '/pages/activity-create/index' },
+    { label: '用户管理', icon: Manager, url: '/pages/admin-users/index' },
+    { label: '赛事列表', icon: TodoList, url: HOME_TABS.activities },
   ];
 
   return (
     <View className="ntr-page profile-page">
-      <View className="ntr-card ntr-card--padded profile-head-card">
+      <View className="ntr-card profile-head-card">
         <View className="profile-head">
           <View className="ntr-avatar profile-head__avatar">
             {user.avatarUrl ? (
@@ -98,14 +103,19 @@ export default function ProfilePage() {
             {user.profileCompleted === false && (
               <View
                 className="ntr-btn ntr-btn--primary ntr-btn--sm profile-head__btn"
+                hoverClass="ntr-hover"
                 onClick={() => go('/pages/profile-detail/index')}
               >
                 <Text>完善资料</Text>
               </View>
             )}
-            <View className="profile-head__link" onClick={() => go('/pages/profile-detail/index')}>
+            <View
+              className="profile-head__link"
+              hoverClass="ntr-hover-fade"
+              onClick={() => go('/pages/profile-detail/index')}
+            >
               <Text className="profile-head__link-text">个人资料</Text>
-              <Text className="profile-row__arrow">›</Text>
+              <ArrowRight className="profile-head__link-arrow" size="16" />
             </View>
           </View>
         </View>
@@ -113,8 +123,15 @@ export default function ProfilePage() {
 
       <View className="profile-grid">
         {featureGrid.map((item) => (
-          <View key={item.label} className="profile-grid__item" onClick={() => go(item.url)}>
-            <View className="profile-grid__icon">{item.icon}</View>
+          <View
+            key={item.label}
+            className="profile-grid__item"
+            hoverClass="ntr-hover"
+            onClick={() => go(item.url)}
+          >
+            <View className="profile-grid__icon">
+              <item.icon size="40" />
+            </View>
             <Text className="profile-grid__label">{item.label}</Text>
           </View>
         ))}
@@ -123,15 +140,27 @@ export default function ProfilePage() {
       {isAdmin() && (
         <View className="profile-group">
           {adminRows.map((row) => (
-            <View key={row.label} className="ntr-row" onClick={() => go(row.url)}>
-              <Text className="ntr-row__label">{row.label}</Text>
-              <Text className="profile-row__arrow">›</Text>
+            <View
+              key={row.label}
+              className="ntr-row"
+              hoverClass="ntr-hover-fade"
+              onClick={() => go(row.url)}
+            >
+              <View className="profile-row__leading">
+                <row.icon size="26" />
+              </View>
+              <Text className="ntr-row__label profile-row__label">{row.label}</Text>
+              <ArrowRight className="profile-row__arrow" size="20" />
             </View>
           ))}
         </View>
       )}
 
-      <View className="ntr-btn ntr-btn--danger profile-logout" onClick={() => void handleLogout()}>
+      <View
+        className="ntr-btn ntr-btn--danger profile-logout"
+        hoverClass="ntr-hover"
+        onClick={() => void handleLogout()}
+      >
         <Text>退出登录</Text>
       </View>
     </View>

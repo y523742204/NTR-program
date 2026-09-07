@@ -1,5 +1,6 @@
 import Taro, { useDidShow, useReachBottom } from '@tarojs/taro';
 import { Text, View } from '@tarojs/components';
+import { ArrowRight, Clock, Location } from '@taroify/icons';
 import { useCallback, useState } from 'react';
 
 import type { MySignupListResponse, MySignupRecordResponse } from '@ntr/shared';
@@ -42,18 +43,21 @@ function SignupCard({ record }: { record: MySignupRecordResponse }) {
       </View>
       <Text className="sr-card__title">{record.activityTitle}</Text>
       <View className="sr-card__meta">
-        <Text className="sr-card__meta-icon">◷</Text>
+        <Clock className="sr-card__meta-icon" size="22" />
         <Text>{formatRange(record.startAt, record.endAt)}</Text>
       </View>
       <View className="sr-card__meta">
-        <Text className="sr-card__meta-icon">◎</Text>
+        <Location className="sr-card__meta-icon" size="22" />
         <Text>{record.locationName}</Text>
       </View>
       <View className="sr-card__foot">
         <Text className="ntr-text-3">
           {record.signupStatus === 'CONFIRMED' ? '已报名' : '等待补位'}
         </Text>
-        <Text className="sr-card__go">查看 ›</Text>
+        <View className="sr-card__go">
+          <Text>查看</Text>
+          <ArrowRight size="16" />
+        </View>
       </View>
     </View>
   );

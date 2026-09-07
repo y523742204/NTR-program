@@ -2,18 +2,51 @@
   padding-top: 16px;
 }
 
+/* ---------- Hero 品牌横幅 ---------- */
 .index-hero {
   margin-bottom: 24px;
 }
 
-.index-hero__logo {
+.index-hero__banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--ntr-radius-lg);
+  padding: 44px 32px 36px;
+  background: linear-gradient(135deg, #e8f7ee 0%, #d4f0e0 55%, #bce7cf 100%);
+  box-shadow: var(--ntr-shadow-card);
+}
+
+.index-hero__banner::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: rgba(47, 191, 127, 0.14);
+}
+
+.index-hero__banner::before {
+  content: '';
+  position: absolute;
+  right: 20px;
+  bottom: -80px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(31, 166, 115, 0.1);
+}
+
+.index-hero__brand {
+  position: relative;
   display: flex;
-  align-items: baseline;
-  gap: 20px;
+  align-items: center;
+  gap: 14px;
 }
 
 .index-hero__brand-ntr {
-  font-size: 68px;
+  font-size: 64px;
   font-weight: 900;
   letter-spacing: 6px;
   background: linear-gradient(135deg, var(--ntr-primary) 0%, var(--ntr-accent) 100%);
@@ -23,16 +56,18 @@
 }
 
 .index-hero__brand-dot {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: var(--ntr-primary);
   box-shadow: 0 0 18px rgba(47, 191, 127, 0.6);
 }
 
 .index-hero__tagline {
+  position: relative;
+  margin-top: 12px;
   font-size: 24px;
-  color: var(--ntr-text-3);
+  color: var(--ntr-text-2);
 }
 
 /* ---------- 状态 Tab ---------- */
@@ -40,25 +75,31 @@
   display: flex;
   gap: 8px;
   margin-bottom: 20px;
+  padding: 8px;
+  background: var(--ntr-surface);
+  border: 1px solid var(--ntr-line);
+  border-radius: var(--ntr-radius-md);
+  box-shadow: var(--ntr-shadow-sm);
 }
 
 .index-tabs__item {
   flex: 1;
   text-align: center;
-  height: 72px;
-  line-height: 72px;
+  height: 68px;
+  line-height: 68px;
   font-size: 28px;
   color: var(--ntr-text-2);
-  border-radius: 14px;
-  background: var(--ntr-surface);
-  border: 2px solid var(--ntr-line);
+  border-radius: var(--ntr-radius-sm);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
 .index-tabs__item--active {
-  background: var(--ntr-primary-dim);
-  border-color: var(--ntr-primary);
-  color: var(--ntr-primary);
+  background: linear-gradient(135deg, var(--ntr-primary), #25a86c);
+  color: #ffffff;
   font-weight: 700;
+  box-shadow: 0 4px 12px rgba(47, 191, 127, 0.3);
 }
 
 /* ---------- 赛制 chips ---------- */
@@ -74,14 +115,19 @@
   font-size: 24px;
   color: var(--ntr-text-2);
   background: var(--ntr-surface);
-  border: 2px solid var(--ntr-line);
+  border: 1px solid var(--ntr-line);
+  box-shadow: var(--ntr-shadow-sm);
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
 .index-chips__item--active {
-  background: var(--ntr-primary);
-  border-color: var(--ntr-primary);
+  background: linear-gradient(135deg, var(--ntr-primary), #25a86c);
+  border-color: transparent;
   color: #ffffff;
   font-weight: 600;
+  box-shadow: 0 4px 12px rgba(47, 191, 127, 0.3);
 }
 
 .index-list {
@@ -96,16 +142,23 @@
 /* ---------- 赛事卡片 ---------- */
 .act-card {
   background: var(--ntr-surface);
-  border: 2px solid var(--ntr-line);
-  border-radius: 18px;
+  border: 1px solid var(--ntr-line);
+  border-radius: var(--ntr-radius-lg);
   margin-bottom: 20px;
   overflow: hidden;
+  box-shadow: var(--ntr-shadow-card);
+}
+
+.act-card__main {
+  display: flex;
 }
 
 .act-card__cover {
   position: relative;
-  height: 260px;
+  width: 200px;
+  flex-shrink: 0;
   background: var(--ntr-surface-2);
+  overflow: hidden;
 }
 
 .act-card__cover-img {
@@ -116,85 +169,138 @@
 .act-card__cover-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--ntr-primary-dim), var(--ntr-surface-2));
-}
-
-.act-card__cover-tags {
-  position: absolute;
-  left: 16px;
-  top: 16px;
+  background: linear-gradient(135deg, var(--ntr-primary) 0%, var(--ntr-accent) 100%);
   display: flex;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
 }
 
-.act-card__published {
+.act-card__cover-text {
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.act-card__cover-shade {
   position: absolute;
-  right: 16px;
-  top: 16px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(21, 52, 40, 0.18) 0%, transparent 40%);
 }
 
-.act-card__body {
-  padding: 20px 24px 24px;
+.act-card__status {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 4px 16px;
+  border-radius: 999px;
+  font-size: 22px;
+  line-height: 1.6;
+  box-shadow: var(--ntr-shadow-sm);
+}
+
+.act-card__status--upcoming {
+  color: #ffffff;
+  background: var(--ntr-primary);
+}
+
+.act-card__status--ongoing {
+  color: #ffffff;
+  background: var(--ntr-accent);
+}
+
+.act-card__status--finished {
+  color: var(--ntr-text-2);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.act-card__info {
+  flex: 1;
+  min-width: 0;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
 }
 
 .act-card__title {
-  display: block;
-  margin-bottom: 16px;
-  font-size: 32px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 30px;
   font-weight: 700;
+  letter-spacing: 0.5px;
   color: var(--ntr-text);
+  margin-bottom: 12px;
+}
+
+.act-card__tags {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.act-card__tag {
+  padding: 4px 16px;
+  border-radius: 999px;
+  font-size: 22px;
+  line-height: 1.6;
+}
+
+.act-card__tag--mode {
+  background: var(--ntr-primary-dim);
+  color: var(--ntr-primary);
+}
+
+.act-card__tag--muted {
+  background: rgba(143, 168, 155, 0.18);
+  color: var(--ntr-text-2);
 }
 
 .act-card__meta {
   display: flex;
   align-items: center;
-  margin-bottom: 6px;
+  margin-top: 6px;
 }
 
 .act-card__meta-icon {
-  width: 36px;
-  font-size: 24px;
+  width: 30px;
   color: var(--ntr-primary);
-  margin-right: 8px;
+  margin-right: 6px;
 }
 
 .act-card__meta-text {
   flex: 1;
-  font-size: 25px;
+  font-size: 24px;
   color: var(--ntr-text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .act-card__meta-courts {
-  font-size: 24px;
+  font-size: 22px;
   color: var(--ntr-text-3);
+  white-space: nowrap;
 }
 
 .act-card__foot {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-top: 18px;
-}
-
-.act-card__progress {
-  flex: 1;
-  height: 8px;
-  border-radius: 8px;
-  background: var(--ntr-surface-2);
-  overflow: hidden;
-}
-
-.act-card__progress-inner {
-  height: 100%;
-  border-radius: 8px;
-  background: linear-gradient(90deg, var(--ntr-primary), var(--ntr-accent));
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-top: 1px solid var(--ntr-line);
 }
 
 .act-card__count {
-  font-size: 24px;
+  font-size: 26px;
   color: var(--ntr-text-2);
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 
 .act-card__count--full {
@@ -202,15 +308,55 @@
 }
 
 .act-card__action {
-  padding: 8px 24px;
+  padding: 10px 32px;
   border-radius: 999px;
   font-size: 24px;
   color: #ffffff;
-  background: var(--ntr-primary);
+  background: linear-gradient(135deg, var(--ntr-primary), #25a86c);
+  box-shadow: 0 4px 12px rgba(47, 191, 127, 0.28);
   white-space: nowrap;
 }
 
 .act-card__action--muted {
   background: var(--ntr-surface-2);
   color: var(--ntr-text-3);
+  box-shadow: none;
+}
+
+/* ---------- 骨架屏 ---------- */
+.act-card--skeleton {
+  pointer-events: none;
+}
+
+.act-card__cover--skeleton {
+  background: linear-gradient(90deg, #eef4f0 25%, #f7faf8 37%, #eef4f0 63%);
+  background-size: 400% 100%;
+  animation: skeleton-slide 1.4s ease infinite;
+}
+
+.skeleton-line {
+  height: 28px;
+  border-radius: var(--ntr-radius-sm);
+  margin-bottom: 14px;
+  background: linear-gradient(90deg, #eef4f0 25%, #f7faf8 37%, #eef4f0 63%);
+  background-size: 400% 100%;
+  animation: skeleton-slide 1.4s ease infinite;
+}
+
+.skeleton-line--title {
+  height: 34px;
+  width: 90%;
+}
+
+.skeleton-line--short {
+  width: 60%;
+}
+
+@keyframes skeleton-slide {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
 }

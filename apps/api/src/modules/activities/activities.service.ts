@@ -13,17 +13,13 @@ import {
 import type { Activity, Prisma } from '../../generated/prisma/client';
 import type { AuthenticatedUser } from '../auth/auth.types';
 import { ActivityRepository, type ActivityListParams } from './activity.repository';
-import { ActivityMatchRepository } from './activity-match.repository';
 import { mapSignupResponse } from './signup-mapper';
 import { CreateActivityData } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 
 @Injectable()
 export class ActivitiesService {
-  constructor(
-    private readonly activities: ActivityRepository,
-    private readonly matchesRepo: ActivityMatchRepository,
-  ) {}
+  constructor(private readonly activities: ActivityRepository) {}
 
   async list(query: ActivityListParams): Promise<ActivityListResponse> {
     const { activities, total, counts } = await this.activities.list(query);
@@ -32,6 +28,7 @@ export class ActivitiesService {
       return {
         id: activity.id,
         title: activity.title,
+        level: activity.level,
         mode: activity.mode,
         status: activity.status,
         signupStartAt: activity.signupStartAt.toISOString(),
@@ -64,6 +61,7 @@ export class ActivitiesService {
       title: data.title,
       note: data.note,
       coverImageUrl: data.coverImageUrl,
+      level: data.level,
       mode: data.mode,
       status: data.status,
       signupStartAt: data.signupStartAt.toISOString(),
@@ -98,6 +96,7 @@ export class ActivitiesService {
     const title = dto.title?.trim() || buildAutoTitle(actor.name, dto.startAt);
     return this.activities.create({
       title,
+      level: dto.level ?? null,
       mode: dto.mode,
       signupStartAt: dto.signupStartAt,
       startAt: dto.startAt,
@@ -122,7 +121,7 @@ export class ActivitiesService {
 
   async update(activityId: string, dto: UpdateActivityDto): Promise<Activity> {
     const activity = await this.activities.findByIdOrThrow(activityId);
-    const data = await this.buildUpdateData(activity, dto);
+    const data = this.buildUpdateData(activity, dto);
     return this.activities.update(activityId, data);
   }
 
@@ -158,27 +157,10 @@ export class ActivitiesService {
     }
   }
 
-  private async buildUpdateData(
-    activity: Activity,
-    dto: UpdateActivityDto,
-  ): Promise<Prisma.ActivityUpdateInput> {
-    const hasSchedule = await this.matchesRepo.hasSchedule(activity.id);
-    const immutableFields = [
-      'courtCount',
-      'maxPlayers',
-      'groupCount',
-      'qualifyPerGroup',
-      'enableThirdPlace',
-      'startAt',
-      'endAt',
-      'matchRuleCode',
-    ];
-    if (hasSchedule && immutableFields.some((field) => field in dto)) {
-      throw new BadRequestException('赛程已生成，不可修改赛程相关配置');
-    }
-
+  private buildUpdateData(activity: Activity, dto: UpdateActivityDto): Prisma.ActivityUpdateInput {
     const data: Prisma.ActivityUpdateInput = {};
     if (dto.title != null) data.title = dto.title.trim() || buildAutoTitle(null, activity.startAt);
+    if (dto.level != null) data.level = dto.level.trim() || null;
     if (dto.note != null) data.note = dto.note ?? null;
     if (dto.signupStartAt != null) data.signupStartAt = new Date(dto.signupStartAt);
     if (dto.startAt != null) data.startAt = new Date(dto.startAt);

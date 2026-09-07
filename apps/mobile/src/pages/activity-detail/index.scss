@@ -20,6 +20,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+.detail-hero__actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-left: auto;
+}
+
 .detail-hero__manage {
   font-size: 24px;
   color: var(--ntr-primary);

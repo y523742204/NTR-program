@@ -139,6 +139,14 @@ export default function ActivityManagePage() {
         <View className="am-head__row">
           <Text className="am-head__title">{detail.title}</Text>
           <Text className={`ntr-tag ntr-tag--${phase.variant}`}>{phase.label}</Text>
+          <Text
+            className="am-head__edit"
+            onClick={() =>
+              void Taro.navigateTo({ url: `/pages/activity-create/index?id=${activityId}` })
+            }
+          >
+            编辑 ›
+          </Text>
         </View>
         <View className="am-head__count">
           <Text className="am-head__stat">

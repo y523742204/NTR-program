@@ -25,6 +25,14 @@ export class UpdateActivityDto implements UpdateActivityRequest {
   title?: string;
 
   @IsOptional()
+  @Transform(({ value }: TransformFnParams): unknown =>
+    typeof value === 'string' ? value.trim() : (value as unknown),
+  )
+  @IsString()
+  @MaxLength(20)
+  level?: string;
+
+  @IsOptional()
   @IsISO8601()
   signupStartAt?: string;
 

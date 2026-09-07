@@ -30,6 +30,14 @@ export class CreateActivityDto implements CreateActivityRequest {
   @MaxLength(40)
   title?: string;
 
+  @IsOptional()
+  @Transform(({ value }: TransformFnParams): unknown =>
+    typeof value === 'string' ? value.trim() : (value as unknown),
+  )
+  @IsString()
+  @MaxLength(20)
+  level?: string;
+
   @IsIn([ACTIVITY_MODES.ROUND_ROBIN, ACTIVITY_MODES.GROUP_KNOCKOUT])
   mode!: ActivityMode;
 
@@ -108,6 +116,7 @@ export class CreateActivityDto implements CreateActivityRequest {
 /** 转为 Date 后的业务入参（服务层使用）。 */
 export interface CreateActivityData {
   title?: string;
+  level?: string;
   mode: ActivityMode;
   signupStartAt: Date;
   startAt: Date;

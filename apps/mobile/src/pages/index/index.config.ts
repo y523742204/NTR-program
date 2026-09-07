@@ -1,5 +1,5 @@
 export default {
-  navigationBarTitleText: 'NTR 赛事',
+  navigationBarTitleText: 'NTR Tour',
   enablePullDownRefresh: true,
   onReachBottomDistance: 120,
 };

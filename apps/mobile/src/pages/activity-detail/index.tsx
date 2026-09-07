@@ -175,7 +175,7 @@ export default function ActivityDetailPage() {
 
   const tabs: { value: DetailTab; label: string }[] = [
     { value: 'schedule', label: '赛程' },
-    { value: 'standings', label: '榜单' },
+    { value: 'standings', label: '排名' },
     ...(isKnockout ? [{ value: 'bracket' as const, label: '对阵' }] : []),
   ];
 
@@ -189,14 +189,24 @@ export default function ActivityDetailPage() {
             {detail.signupCount}/{detail.maxPlayers} 人
           </Text>
           {canManage && (
-            <Text
-              className="detail-hero__manage"
-              onClick={() =>
-                void Taro.navigateTo({ url: `/pages/activity-manage/index?id=${activityId}` })
-              }
-            >
-              管理 ›
-            </Text>
+            <View className="detail-hero__actions">
+              <Text
+                className="detail-hero__manage"
+                onClick={() =>
+                  void Taro.navigateTo({ url: `/pages/activity-create/index?id=${activityId}` })
+                }
+              >
+                编辑
+              </Text>
+              <Text
+                className="detail-hero__manage"
+                onClick={() =>
+                  void Taro.navigateTo({ url: `/pages/activity-manage/index?id=${activityId}` })
+                }
+              >
+                管理 ›
+              </Text>
+            </View>
           )}
         </View>
         <Text className="detail-hero__title">{detail.title}</Text>

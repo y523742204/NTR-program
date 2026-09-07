@@ -67,7 +67,7 @@ export function activityStatusText(status: ActivityStatus): string {
 }
 
 export function modeLabel(mode: ActivityMode): string {
-  return mode === ACTIVITY_MODES.ROUND_ROBIN ? '单循环' : '小组+淘汰';
+  return mode === ACTIVITY_MODES.ROUND_ROBIN ? '单打循环赛' : '单打淘汰赛';
 }
 
 export function stageLabel(stage: MatchStage): string {

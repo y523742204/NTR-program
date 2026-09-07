@@ -71,3 +71,5 @@ pnpm build          # 全仓构建
 pnpm commit         # 符合 Conventional Commits 的提交
 pnpm db:migrate     # 生产迁移：prisma migrate deploy
 ```
+
+wx.switchAccount({ name: '测试', role: 'ADMIN' })

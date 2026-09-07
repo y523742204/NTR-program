@@ -433,6 +433,7 @@ export interface ActivitySignupResponse {
 export interface ActivityListItemResponse {
   id: string;
   title: string;
+  level: string | null;
   mode: ActivityMode;
   status: ActivityStatus;
   signupStartAt: string;
@@ -461,6 +462,7 @@ export interface ActivityDetailResponse {
   title: string;
   note: string | null;
   coverImageUrl: string | null;
+  level: string | null;
   mode: ActivityMode;
   status: ActivityStatus;
   signupStartAt: string;
@@ -491,6 +493,7 @@ export interface ActivityDetailResponse {
 
 export interface CreateActivityRequest {
   title?: string;
+  level?: string;
   mode: ActivityMode;
   signupStartAt: string;
   startAt: string;

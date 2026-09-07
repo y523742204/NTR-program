@@ -53,6 +53,7 @@ export class ActivityRepository {
         select: {
           id: true,
           title: true,
+          level: true,
           mode: true,
           status: true,
           signupStartAt: true,

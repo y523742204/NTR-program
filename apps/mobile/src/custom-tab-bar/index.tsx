@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
+import { HomeOutlined, UserOutlined } from '@taroify/icons';
 import { Component } from 'react';
 
 import { getAuthSession, subscribeAuthSession } from '../services/auth-session';
@@ -52,14 +53,16 @@ export default class CustomTabBar extends Component<object, HomeTabBarState> {
       <View className="ntr-tabbar">
         <View
           className={`ntr-tabbar__item ${activeTab === 'activities' ? 'ntr-tabbar__item--active' : ''}`}
+          hoverClass="ntr-hover-fade"
           onClick={() => void Taro.switchTab({ url: HOME_TABS.activities })}
         >
-          <View className="ntr-tabbar__icon ntr-tabbar__icon--courts" />
+          <HomeOutlined className="ntr-tabbar__icon" size="30" />
           <Text className="ntr-tabbar__label">赛事</Text>
         </View>
         {canPublish && (
           <View
             className="ntr-tabbar__publish"
+            hoverClass="ntr-tabbar__publish--hover"
             onClick={() => void Taro.navigateTo({ url: '/pages/activity-create/index' })}
           >
             <Text className="ntr-tabbar__publish-plus">+</Text>
@@ -67,9 +70,10 @@ export default class CustomTabBar extends Component<object, HomeTabBarState> {
         )}
         <View
           className={`ntr-tabbar__item ${activeTab === 'profile' ? 'ntr-tabbar__item--active' : ''}`}
+          hoverClass="ntr-hover-fade"
           onClick={() => void Taro.switchTab({ url: HOME_TABS.profile })}
         >
-          <View className="ntr-tabbar__icon ntr-tabbar__icon--user" />
+          <UserOutlined className="ntr-tabbar__icon" size="30" />
           <Text className="ntr-tabbar__label">我的</Text>
         </View>
       </View>

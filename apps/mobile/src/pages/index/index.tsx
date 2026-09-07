@@ -1,5 +1,6 @@
 import Taro, { useDidShow, usePullDownRefresh, useReachBottom } from '@tarojs/taro';
 import { Image, Text, View } from '@tarojs/components';
+import { Clock, Location } from '@taroify/icons';
 import { useCallback, useEffect, useState } from 'react';
 
 import type { ActivityListItemResponse, ActivityListResponse } from '@ntr/shared';
@@ -22,77 +23,93 @@ const PHASE_FILTERS: { value: PhaseFilter; label: string }[] = [
 
 const MODE_FILTERS: { value: ModeFilter; label: string }[] = [
   { value: 'ALL', label: '全部赛制' },
-  { value: 'ROUND_ROBIN', label: '单循环' },
-  { value: 'GROUP_KNOCKOUT', label: '小组+淘汰' },
+  { value: 'ROUND_ROBIN', label: '循环赛' },
+  { value: 'GROUP_KNOCKOUT', label: '淘汰赛' },
 ];
 
 const PAGE_SIZE = 10;
 
 function ActivityCard({ activity }: { activity: ActivityListItemResponse }) {
   const phase = getActivityPhase(activity.startAt, activity.endAt);
-  const percent =
-    activity.maxPlayers > 0
-      ? Math.min(100, Math.round((activity.signupCount / activity.maxPlayers) * 100))
-      : 0;
   const full = activity.signupCount >= activity.maxPlayers && activity.maxPlayers > 0;
-  const phaseTag =
+  const statusClass =
     phase === 'FINISHED'
-      ? 'ntr-tag--muted'
+      ? 'act-card__status--finished'
       : phase === 'ONGOING'
-        ? 'ntr-tag--accent'
-        : 'ntr-tag--primary';
+        ? 'act-card__status--ongoing'
+        : 'act-card__status--upcoming';
   const actionLabel = phase === 'UPCOMING' ? '报名中' : phase === 'ONGOING' ? '进行中' : '已结束';
+  const actionClass = phase === 'FINISHED' ? 'act-card__action--muted' : '';
 
   return (
     <View
       className="act-card"
+      hoverClass="ntr-hover"
       onClick={() =>
         void Taro.navigateTo({ url: `/pages/activity-detail/index?id=${activity.id}` })
       }
     >
-      <View className="act-card__cover">
-        {activity.coverImageUrl ? (
-          <Image
-            className="act-card__cover-img"
-            src={resolveApiAssetUrl(activity.coverImageUrl)}
-            mode="aspectFill"
-          />
-        ) : (
-          <View className="act-card__cover-placeholder" />
-        )}
-        <View className="act-card__cover-tags">
-          <Text className="ntr-tag ntr-tag--primary">{modeLabel(activity.mode)}</Text>
-          <Text className={`ntr-tag ${phaseTag}`}>{PHASE_LABEL[phase]}</Text>
+      <View className="act-card__main">
+        <View className="act-card__cover">
+          {activity.coverImageUrl ? (
+            <Image
+              className="act-card__cover-img"
+              src={resolveApiAssetUrl(activity.coverImageUrl)}
+              mode="aspectFill"
+            />
+          ) : (
+            <View className="act-card__cover-placeholder">
+              <Text className="act-card__cover-text">
+                {activity.level ? `【${activity.level}】` : ''}
+                {modeLabel(activity.mode)}
+              </Text>
+            </View>
+          )}
+          <View className="act-card__cover-shade" />
+          <Text className={`act-card__status ${statusClass}`}>{PHASE_LABEL[phase]}</Text>
         </View>
-        {activity.schedulePublished && (
-          <Text className="ntr-tag ntr-tag--muted act-card__published">赛程已发布</Text>
-        )}
+        <View className="act-card__info">
+          <Text className="act-card__title">{activity.title}</Text>
+          <View className="act-card__tags">
+            <Text className="act-card__tag act-card__tag--mode">{modeLabel(activity.mode)}</Text>
+            {activity.schedulePublished && (
+              <Text className="act-card__tag act-card__tag--muted">赛程已发布</Text>
+            )}
+          </View>
+          <View className="act-card__meta">
+            <Clock className="act-card__meta-icon" size="22" />
+            <Text className="act-card__meta-text">
+              {formatRange(activity.startAt, activity.endAt)}
+            </Text>
+          </View>
+          <View className="act-card__meta">
+            <Location className="act-card__meta-icon" size="22" />
+            <Text className="act-card__meta-text">{activity.locationName}</Text>
+            <Text className="act-card__meta-courts">{activity.courtCount} 片场地</Text>
+          </View>
+        </View>
       </View>
-      <View className="act-card__body">
-        <Text className="act-card__title">{activity.title}</Text>
-        <View className="act-card__meta">
-          <Text className="act-card__meta-icon">◷</Text>
-          <Text className="act-card__meta-text">
-            {formatRange(activity.startAt, activity.endAt)}
-          </Text>
+      <View className="act-card__foot">
+        <Text className={`act-card__count ${full ? 'act-card__count--full' : ''}`}>
+          {activity.signupCount}/{activity.maxPlayers} 人
+        </Text>
+        <View className={`act-card__action ${actionClass}`}>
+          <Text>{actionLabel}</Text>
         </View>
-        <View className="act-card__meta">
-          <Text className="act-card__meta-icon">◎</Text>
-          <Text className="act-card__meta-text">{activity.locationName}</Text>
-          <Text className="act-card__meta-courts">{activity.courtCount} 片场地</Text>
-        </View>
-        <View className="act-card__foot">
-          <View className="act-card__progress">
-            <View className="act-card__progress-inner" style={{ width: `${percent}%` }} />
-          </View>
-          <Text className={`act-card__count ${full ? 'act-card__count--full' : ''}`}>
-            {activity.signupCount}/{activity.maxPlayers} 人
-          </Text>
-          <View
-            className={`act-card__action ${phase === 'FINISHED' ? 'act-card__action--muted' : ''}`}
-          >
-            <Text>{actionLabel}</Text>
-          </View>
+      </View>
+    </View>
+  );
+}
+
+function SkeletonCard() {
+  return (
+    <View className="act-card act-card--skeleton">
+      <View className="act-card__main">
+        <View className="act-card__cover act-card__cover--skeleton" />
+        <View className="act-card__info">
+          <View className="skeleton-line skeleton-line--title" />
+          <View className="skeleton-line" />
+          <View className="skeleton-line skeleton-line--short" />
         </View>
       </View>
     </View>
@@ -153,11 +170,12 @@ export default function IndexPage() {
   return (
     <View className="ntr-page index-page">
       <View className="index-hero">
-        <View className="index-hero__logo">
-          <Text className="index-hero__brand-ntr">NTR</Text>
-          <View className="index-hero__brand-dot" />
+        <View className="index-hero__banner">
+          <View className="index-hero__brand">
+            <Text className="index-hero__brand-ntr">NTR</Text>
+          </View>
+          <Text className="index-hero__tagline">NYG网球赛事平台</Text>
         </View>
-        <Text className="index-hero__tagline">单打网球赛事 · 循环与淘汰</Text>
       </View>
 
       <View className="index-tabs">
@@ -188,9 +206,10 @@ export default function IndexPage() {
 
       <View className="index-list">
         {initialLoading && (
-          <View className="ntr-empty">
-            <View className="ntr-empty__icon">…</View>
-            <Text className="ntr-empty__text">正在加载赛事</Text>
+          <View>
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
           </View>
         )}
         {!initialLoading && items.length === 0 && (

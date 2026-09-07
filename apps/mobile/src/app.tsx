@@ -4,6 +4,7 @@ import type { PropsWithChildren } from 'react';
 
 import { API_BASE_URL } from './services/api';
 import { saveAuthSession } from './services/auth-session';
+import '@taroify/icons/index.css';
 import './app.scss';
 
 interface DevSwitchAccountInput {

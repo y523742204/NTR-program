@@ -39,7 +39,7 @@ export default function StandingsView({ mode, data, loading }: StandingsViewProp
     return (
       <View className="ntr-empty">
         <View className="ntr-empty__icon">…</View>
-        <Text className="ntr-empty__text">加载榜单中</Text>
+        <Text className="ntr-empty__text">加载排名中</Text>
       </View>
     );
   }
@@ -47,7 +47,7 @@ export default function StandingsView({ mode, data, loading }: StandingsViewProp
     return (
       <View className="ntr-empty">
         <View className="ntr-empty__icon">▤</View>
-        <Text className="ntr-empty__text">暂无榜单数据</Text>
+        <Text className="ntr-empty__text">暂无排名数据</Text>
       </View>
     );
   }
@@ -66,7 +66,7 @@ export default function StandingsView({ mode, data, loading }: StandingsViewProp
         {rr.rows.map((row) => (
           <RowLine key={row.signupId} row={row} />
         ))}
-        {!rr.completed && <Text className="st-tip">榜单随比分录入实时更新</Text>}
+        {!rr.completed && <Text className="st-tip">排名随比分录入实时更新</Text>}
       </View>
     );
   }

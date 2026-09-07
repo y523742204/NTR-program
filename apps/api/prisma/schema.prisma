@@ -111,6 +111,7 @@ model Activity {
   title               String
   note                String?
   coverImageUrl       String?
+  level               String?
   mode                ActivityMode
   status              ActivityStatus    @default(PUBLISHED)
   signupStartAt       DateTime          @db.Timestamptz(3)
