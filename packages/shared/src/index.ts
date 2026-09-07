@@ -11,6 +11,9 @@ export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
 
 export type ParticipantGender = 'MALE' | 'FEMALE';
 
+export const PLAYER_LEVELS = ['2.5', '3.0', '3.5', '4.0', '4.5'] as const;
+export type PlayerLevel = (typeof PLAYER_LEVELS)[number];
+
 export const ACTIVITY_MODES = {
   ROUND_ROBIN: 'ROUND_ROBIN',
   GROUP_KNOCKOUT: 'GROUP_KNOCKOUT',
@@ -367,6 +370,7 @@ export interface AuthUserResponse {
   phone: string;
   avatarUrl: string | null;
   gender: ParticipantGender | null;
+  level: PlayerLevel | null;
   role: UserRole;
   profileCompleted: boolean;
 }
@@ -393,6 +397,7 @@ export interface UpdateAuthProfileRequest {
   name?: string;
   avatarUrl?: string;
   gender?: ParticipantGender;
+  level?: PlayerLevel;
 }
 
 export interface AvatarUploadResponse {
@@ -495,11 +500,11 @@ export interface CreateActivityRequest {
   title?: string;
   level?: string;
   mode: ActivityMode;
-  signupStartAt: string;
+  signupStartAt?: string;
   startAt: string;
   endAt: string;
   locationName: string;
-  locationAddress: string;
+  locationAddress?: string;
   latitude?: number;
   longitude?: number;
   venue?: string;

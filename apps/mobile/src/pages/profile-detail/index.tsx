@@ -1,10 +1,15 @@
 import Taro from '@tarojs/taro';
 import { Button, Image, Input, Text, View } from '@tarojs/components';
 import { useState } from 'react';
-import type { AuthUserResponse, AvatarUploadResponse } from '@ntr/shared';
+import {
+  PLAYER_LEVELS,
+  type AuthUserResponse,
+  type AvatarUploadResponse,
+  type PlayerLevel,
+} from '@ntr/shared';
 
 import { apiRequest, apiUploadFile, resolveApiAssetUrl } from '../../services/api';
-import { saveAuthUser } from '../../services/auth-session';
+import { getAuthSession, saveAuthUser } from '../../services/auth-session';
 import { getCurrentRedirectRoute, isProfileOnboarding } from '../../services/redirect-route';
 
 import './index.scss';
@@ -12,9 +17,11 @@ import './index.scss';
 type Gender = 'MALE' | 'FEMALE';
 
 export default function ProfileDetailPage() {
-  const [avatarUrl, setAvatarUrl] = useState('');
-  const [name, setName] = useState('');
-  const [gender, setGender] = useState<Gender | null>(null);
+  const [user] = useState(() => getAuthSession()?.user ?? null);
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatarUrl ?? '');
+  const [name, setName] = useState(user?.name ?? '');
+  const [gender, setGender] = useState<Gender | null>(user?.gender ?? null);
+  const [level, setLevel] = useState<PlayerLevel | null>(user?.level ?? null);
   const [saving, setSaving] = useState(false);
 
   async function chooseAvatar() {
@@ -42,7 +49,7 @@ export default function ProfileDetailPage() {
       const user = await apiRequest<AuthUserResponse>({
         path: '/auth/me',
         method: 'PATCH',
-        data: { name: name.trim(), gender, avatarUrl: avatarUrl || null },
+        data: { name: name.trim(), gender, level, avatarUrl: avatarUrl || null },
       });
       saveAuthUser(user);
       void Taro.showToast({ title: '保存成功', icon: 'success' });
@@ -105,6 +112,21 @@ export default function ProfileDetailPage() {
             >
               女
             </View>
+          </View>
+        </View>
+
+        <View className="ntr-field">
+          <View className="ntr-field__label">等级</View>
+          <View className="profile-detail-levels">
+            {PLAYER_LEVELS.map((item) => (
+              <View
+                key={item}
+                className={`profile-detail-level ${level === item ? 'profile-detail-level--active' : ''}`}
+                onClick={() => setLevel(level === item ? null : item)}
+              >
+                {item}
+              </View>
+            ))}
           </View>
         </View>
       </View>

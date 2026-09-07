@@ -1,20 +1,18 @@
 .time-field {
-  margin-bottom: 28px;
-
-  &__row {
-    display: flex;
-    gap: 20px;
-  }
-
   &__item {
-    flex: 1;
-    height: 88px;
-    line-height: 88px;
+    height: 76px;
+    line-height: 76px;
     text-align: center;
     background: var(--ntr-surface);
     border: 1px solid var(--ntr-line);
-    border-radius: var(--ntr-radius-md);
+    border-radius: var(--ntr-radius-sm);
     color: var(--ntr-text);
-    font-size: 30px;
+    font-size: 26px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__item + &__item {
+    margin-top: 16px;
   }
 }

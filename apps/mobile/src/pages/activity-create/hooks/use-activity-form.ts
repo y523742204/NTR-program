@@ -7,20 +7,16 @@ export interface ActivityForm {
   level: string;
   title: string;
   note: string;
-  signupDate: string;
-  signupTime: string;
   startDate: string;
   startTime: string;
   endDate: string;
   endTime: string;
   locationName: string;
-  locationAddress: string;
   latitude?: number;
   longitude?: number;
   venue: string;
   maxPlayers: number;
   courtCount: number;
-  warmupMinutes: number;
   matchRuleCode: MatchRuleCode;
   groupCount: number;
   qualifyPerGroup: number;
@@ -29,7 +25,6 @@ export interface ActivityForm {
 
 export interface LocationPick {
   name: string;
-  address: string;
   latitude?: number;
   longitude?: number;
 }
@@ -48,18 +43,16 @@ function initForm(): ActivityForm {
     level: '3.0',
     title: '',
     note: '',
-    signupDate: today,
-    signupTime: '08:00',
     startDate: today,
     startTime: '09:00',
     endDate: today,
     endTime: '12:00',
     locationName: '',
-    locationAddress: '',
+    latitude: undefined,
+    longitude: undefined,
     venue: '',
     maxPlayers: 8,
     courtCount: 2,
-    warmupMinutes: 10,
     matchRuleCode: MATCH_RULES[0].code,
     groupCount: 2,
     qualifyPerGroup: 1,
@@ -93,7 +86,12 @@ export function useActivityForm(initial?: Partial<ActivityForm>) {
   }
 
   function setLocation(location: LocationPick) {
-    setForm((prev) => ({ ...prev, ...location }));
+    setForm((prev) => ({
+      ...prev,
+      locationName: location.name,
+      latitude: location.latitude,
+      longitude: location.longitude,
+    }));
   }
 
   function replace(patch: Partial<ActivityForm>) {

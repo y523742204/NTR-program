@@ -43,7 +43,7 @@ export default function KnockoutOptions({
         <Text className="ntr-field__label">设置三四名决赛</Text>
         <Switch
           checked={enableThirdPlace}
-          color="#35e69c"
+          color="#1f9d66"
           onChange={(e) => onEnableThirdPlace(e.detail.value)}
         />
       </View>

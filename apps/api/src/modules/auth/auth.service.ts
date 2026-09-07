@@ -145,6 +145,7 @@ export class AuthService {
       phone: user.phone,
       avatarUrl: user.avatarUrl,
       gender: user.gender,
+      level: (user.level as AuthUserResponse['level']) ?? null,
       role: user.role,
       profileCompleted: Boolean(user.profileCompletedAt && user.name && user.gender),
     };

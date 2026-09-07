@@ -1,5 +1,5 @@
 import type { Request } from 'express';
-import type { ParticipantGender, UserRole } from '@ntr/shared';
+import type { ParticipantGender, PlayerLevel, UserRole } from '@ntr/shared';
 
 export interface AuthenticatedUser {
   id: string;
@@ -8,6 +8,7 @@ export interface AuthenticatedUser {
   phone: string;
   avatarUrl: string | null;
   gender: ParticipantGender | null;
+  level: PlayerLevel | null;
   role: UserRole;
   profileCompleted: boolean;
 }

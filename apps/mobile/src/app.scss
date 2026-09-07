@@ -1,19 +1,19 @@
-/* ===== NTR 清新绿设计系统 · 精修 ===== */
+/* ===== NTR 高对比中性主题 ===== */
 page {
-  --ntr-bg: #f1f7f3;
+  --ntr-bg: #f4f5f7;
   --ntr-surface: #ffffff;
-  --ntr-surface-2: #e4f0e9;
-  --ntr-surface-3: #dcefe4;
-  --ntr-line: #d8e8de;
-  --ntr-primary: #25b47a;
-  --ntr-primary-dim: rgba(37, 180, 122, 0.12);
-  --ntr-primary-hi: #1d9265;
-  --ntr-accent: #17a06b;
-  --ntr-danger: #f2604f;
-  --ntr-warn: #e9a13b;
-  --ntr-text: #123026;
-  --ntr-text-2: #587366;
-  --ntr-text-3: #8aa79a;
+  --ntr-surface-2: #eef0f2;
+  --ntr-surface-3: #e4e7ea;
+  --ntr-line: #e3e6ea;
+  --ntr-primary: #1f9d66;
+  --ntr-primary-dim: rgba(31, 157, 102, 0.1);
+  --ntr-primary-hi: #178a58;
+  --ntr-accent: #178a58;
+  --ntr-danger: #e5484d;
+  --ntr-warn: #d97706;
+  --ntr-text: #16181d;
+  --ntr-text-2: #3f4650;
+  --ntr-text-3: #626a75;
 
   /* 表面与半径：容器更柔和，内元素更紧凑 */
   --ntr-safe-bottom: env(safe-area-inset-bottom);
@@ -22,14 +22,14 @@ page {
   --ntr-radius-lg: 24px;
   --ntr-radius-max: 999px;
 
-  /* 单一光源（顶部向下）的统一有色阴影 */
-  --ntr-shadow-sm: 0 2px 6px rgba(23, 86, 62, 0.05);
-  --ntr-shadow-card: 0 8px 28px rgba(23, 86, 62, 0.08);
-  --ntr-shadow-float: 0 16px 40px rgba(23, 86, 62, 0.14);
-  --ntr-shadow-primary: 0 8px 20px rgba(37, 180, 122, 0.3);
+  /* 单一光源（顶部向下）的中性阴影 */
+  --ntr-shadow-sm: 0 2px 6px rgba(17, 24, 39, 0.06);
+  --ntr-shadow-card: 0 8px 28px rgba(17, 24, 39, 0.08);
+  --ntr-shadow-float: 0 16px 40px rgba(17, 24, 39, 0.12);
+  --ntr-shadow-primary: 0 8px 20px rgba(31, 157, 102, 0.28);
 
   min-height: 100%;
-  background: linear-gradient(180deg, #e7f4ec 0%, var(--ntr-bg) 24%);
+  background: var(--ntr-bg);
   color: var(--ntr-text);
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
@@ -168,7 +168,7 @@ input {
 }
 
 .ntr-tag--accent {
-  background: rgba(37, 180, 122, 0.16);
+  background: rgba(31, 157, 102, 0.14);
   color: var(--ntr-primary-hi);
 }
 

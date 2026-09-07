@@ -41,8 +41,9 @@ export class CreateActivityDto implements CreateActivityRequest {
   @IsIn([ACTIVITY_MODES.ROUND_ROBIN, ACTIVITY_MODES.GROUP_KNOCKOUT])
   mode!: ActivityMode;
 
+  @IsOptional()
   @IsISO8601()
-  signupStartAt!: string;
+  signupStartAt?: string;
 
   @IsISO8601()
   startAt!: string;
@@ -54,9 +55,10 @@ export class CreateActivityDto implements CreateActivityRequest {
   @MaxLength(40)
   locationName!: string;
 
+  @IsOptional()
   @IsString()
   @MaxLength(120)
-  locationAddress!: string;
+  locationAddress?: string;
 
   @IsOptional()
   @IsNumber()
@@ -139,7 +141,8 @@ export interface CreateActivityData {
 export function toCreateActivityData(dto: CreateActivityDto): CreateActivityData {
   return {
     ...dto,
-    signupStartAt: new Date(dto.signupStartAt),
+    locationAddress: dto.locationAddress ?? '',
+    signupStartAt: new Date(dto.signupStartAt ?? dto.startAt),
     startAt: new Date(dto.startAt),
     endAt: new Date(dto.endAt),
     warmupMinutes: dto.warmupMinutes ?? 10,

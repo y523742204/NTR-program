@@ -13,8 +13,8 @@
   border-radius: var(--ntr-radius-lg);
   padding: 46px 32px 38px;
   background:
-    radial-gradient(120% 160% at 100% 0%, rgba(37, 180, 122, 0.22) 0%, rgba(37, 180, 122, 0) 55%),
-    linear-gradient(135deg, #e9f7ef 0%, #d5f0e0 60%, #c3e9d3 100%);
+    radial-gradient(120% 160% at 100% 0%, rgba(31, 157, 102, 0.16) 0%, rgba(31, 157, 102, 0) 55%),
+    linear-gradient(135deg, #ffffff 0%, #f2f6f3 100%);
   box-shadow: var(--ntr-shadow-card);
 }
 
@@ -26,7 +26,7 @@
   width: 240px;
   height: 240px;
   border-radius: 50%;
-  background: rgba(37, 180, 122, 0.12);
+  background: rgba(31, 157, 102, 0.08);
 }
 
 .index-hero__banner::before {
@@ -37,7 +37,7 @@
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: rgba(23, 160, 107, 0.1);
+  background: rgba(31, 157, 102, 0.06);
 }
 
 .index-hero__brand {
@@ -62,7 +62,7 @@
   height: 16px;
   border-radius: 4px;
   background: var(--ntr-accent);
-  box-shadow: 0 0 0 6px rgba(37, 180, 122, 0.14);
+  box-shadow: 0 0 0 6px rgba(31, 157, 102, 0.12);
 }
 
 .index-hero__tagline {
@@ -172,7 +172,7 @@
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(120% 120% at 0% 0%, rgba(37, 180, 122, 0.28) 0%, rgba(23, 160, 107, 0.05) 60%),
+    radial-gradient(120% 120% at 0% 0%, rgba(31, 157, 102, 0.24) 0%, rgba(31, 157, 102, 0.04) 60%),
     linear-gradient(135deg, var(--ntr-primary) 0%, var(--ntr-accent) 100%);
   display: flex;
   align-items: center;
@@ -194,7 +194,7 @@
   right: 0;
   top: 0;
   bottom: 0;
-  background: linear-gradient(180deg, rgba(18, 48, 38, 0.16) 0%, transparent 42%);
+  background: linear-gradient(180deg, rgba(12, 17, 14, 0.18) 0%, transparent 42%);
 }
 
 .act-card__status {
@@ -278,12 +278,14 @@
 
 .act-card__meta-icon {
   width: 28px;
+  flex-shrink: 0;
   color: var(--ntr-text-3);
   margin-right: 8px;
 }
 
 .act-card__meta-text {
   flex: 1;
+  min-width: 0;
   font-size: 24px;
   color: var(--ntr-text-2);
   overflow: hidden;
@@ -292,8 +294,9 @@
 }
 
 .act-card__meta-courts {
+  flex-shrink: 0;
   font-size: 22px;
-  color: var(--ntr-text-3);
+  color: var(--ntr-text-2);
   white-space: nowrap;
 }
 
@@ -339,7 +342,7 @@
 }
 
 .act-card__cover--skeleton {
-  background: linear-gradient(90deg, #eef4f0 25%, #f7faf8 37%, #eef4f0 63%);
+  background: linear-gradient(90deg, #eceef1 25%, #f5f6f8 37%, #eceef1 63%);
   background-size: 400% 100%;
   animation: skeleton-slide 1.4s ease infinite;
 }
@@ -348,7 +351,7 @@
   height: 28px;
   border-radius: var(--ntr-radius-sm);
   margin-bottom: 14px;
-  background: linear-gradient(90deg, #eef4f0 25%, #f7faf8 37%, #eef4f0 63%);
+  background: linear-gradient(90deg, #eceef1 25%, #f5f6f8 37%, #eceef1 63%);
   background-size: 400% 100%;
   animation: skeleton-slide 1.4s ease infinite;
 }

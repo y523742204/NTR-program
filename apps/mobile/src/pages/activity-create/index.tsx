@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import Taro from '@tarojs/taro';
-import { Input, Picker, Text, View } from '@tarojs/components';
+import { Input, Text, View } from '@tarojs/components';
 
 import {
   ACTIVITY_MODES,
@@ -14,7 +14,7 @@ import {
 import { apiRequest } from '../../services/api';
 import { requireLogin } from '../../services/guard';
 import KnockoutOptions from './components/knockout-options';
-import StepperField from './components/stepper-field';
+import SliderField from './components/slider-field';
 import TimeField from './components/time-field';
 import { buildAutoTitle, LEVEL_OPTIONS, useActivityForm } from './hooks/use-activity-form';
 
@@ -25,7 +25,7 @@ const MODE_OPTIONS: { value: ActivityMode; label: string; tip: string }[] = [
   { value: ACTIVITY_MODES.GROUP_KNOCKOUT, label: '单打淘汰赛', tip: '标准 4~32 人（8人=2组×4）' },
 ];
 
-const MATCH_RULE_LABELS = MATCH_RULES.map((rule) => rule.label);
+const RULE_SHORT_LABELS = MATCH_RULES.map((rule) => rule.shortLabel);
 
 function splitDateTime(iso: string): { date: string; time: string } {
   const d = new Date(iso);
@@ -36,10 +36,23 @@ function splitDateTime(iso: string): { date: string; time: string } {
   };
 }
 
+function buildCourtNames(venue: string, count: number): string[] {
+  const names = venue
+    ? venue
+        .split(/[、,，]/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : [];
+  return Array.from({ length: count }, (_, i) => names[i] ?? `${i + 1}号场`);
+}
+
 export default function ActivityCreatePage() {
   const editingId = Taro.getCurrentInstance().router?.params?.id;
   const isEdit = Boolean(editingId);
   const { form, setField, setLocation, replace, iso } = useActivityForm();
+  const [courtNames, setCourtNames] = useState<string[]>(() =>
+    buildCourtNames(form.venue, form.courtCount),
+  );
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(isEdit);
 
@@ -49,6 +62,16 @@ export default function ActivityCreatePage() {
   const isKnockout = form.mode === ACTIVITY_MODES.GROUP_KNOCKOUT;
   const selectedRule = getMatchRule(form.matchRuleCode);
   const autoTitle = buildAutoTitle(form);
+  const levelIndex = Math.max(0, LEVEL_OPTIONS.indexOf(form.level));
+  const ruleIndex = Math.max(
+    0,
+    MATCH_RULES.findIndex((rule) => rule.code === form.matchRuleCode),
+  );
+  const venue =
+    courtNames
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .join('、') || undefined;
 
   const loadDetail = useCallback(async () => {
     if (!editingId) return;
@@ -56,31 +79,26 @@ export default function ActivityCreatePage() {
       const data = await apiRequest<ActivityDetailResponse>({ path: `/activities/${editingId}` });
       const s = splitDateTime(data.startAt);
       const e = splitDateTime(data.endAt);
-      const sg = splitDateTime(data.signupStartAt);
       replace({
         mode: data.mode,
         level: data.level ?? '',
         title: data.title,
         note: data.note ?? '',
-        signupDate: sg.date,
-        signupTime: sg.time,
         startDate: s.date,
         startTime: s.time,
         endDate: e.date,
         endTime: e.time,
         locationName: data.locationName,
-        locationAddress: data.locationAddress,
         latitude: data.latitude ?? undefined,
         longitude: data.longitude ?? undefined,
-        venue: data.venue ?? '',
         maxPlayers: data.maxPlayers,
         courtCount: data.courtCount,
-        warmupMinutes: data.warmupMinutes,
         matchRuleCode: data.matchRuleCode,
         groupCount: data.groupCount ?? 2,
         qualifyPerGroup: data.qualifyPerGroup ?? 1,
         enableThirdPlace: data.enableThirdPlace ?? false,
       });
+      setCourtNames(buildCourtNames(data.venue ?? '', data.courtCount));
     } catch {
       void Taro.showToast({ title: '加载赛事失败', icon: 'none' });
     } finally {
@@ -102,7 +120,6 @@ export default function ActivityCreatePage() {
       success: (res) => {
         setLocation({
           name: res.name || form.locationName,
-          address: res.address || '',
           latitude: res.latitude,
           longitude: res.longitude,
         });
@@ -113,23 +130,29 @@ export default function ActivityCreatePage() {
     });
   }
 
+  function handleCourtCount(value: number) {
+    setField('courtCount', value);
+    setCourtNames((prev) => Array.from({ length: value }, (_, i) => prev[i] ?? `${i + 1}号场`));
+  }
+
+  function handleCourtName(index: number, value: string) {
+    setCourtNames((prev) => prev.map((name, i) => (i === index ? value : name)));
+  }
+
   function buildPayload(): CreateActivityRequest {
     return {
       mode: form.mode,
       title: form.title.trim() || autoTitle,
       level: form.level || undefined,
       note: form.note.trim() || undefined,
-      signupStartAt: iso(form.signupDate, form.signupTime),
       startAt: iso(form.startDate, form.startTime),
       endAt: iso(form.endDate, form.endTime),
       locationName: form.locationName.trim(),
-      locationAddress: form.locationAddress.trim(),
       ...(form.latitude != null ? { latitude: form.latitude } : {}),
       ...(form.longitude != null ? { longitude: form.longitude } : {}),
-      venue: form.venue.trim() || undefined,
+      venue,
       courtCount: form.courtCount,
       maxPlayers: form.maxPlayers,
-      warmupMinutes: form.warmupMinutes,
       matchRuleCode: form.matchRuleCode,
       ...(isKnockout
         ? {
@@ -158,7 +181,7 @@ export default function ActivityCreatePage() {
       content: isEdit
         ? '确认保存赛事修改？保存后自动更新。'
         : '确认发布该赛事？确认后选手即可报名。',
-      confirmColor: '#2fbf7f',
+      confirmColor: '#1f9d66',
     });
     if (!modal.confirm) return;
     setSubmitting(true);
@@ -229,44 +252,43 @@ export default function ActivityCreatePage() {
           ))}
         </View>
         <Text className="activity-create__mode-tip">{activeMode.tip}</Text>
-        <View className="ntr-field">
-          <Text className="ntr-field__label">赛事等级</Text>
-          <Picker
-            mode="selector"
-            range={LEVEL_OPTIONS}
-            value={Math.max(0, LEVEL_OPTIONS.indexOf(form.level))}
-            onChange={(e) => setField('level', LEVEL_OPTIONS[Number(e.detail.value)])}
-          >
-            <View className="ntr-input activity-create__picker">{form.level || '选择等级'}</View>
-          </Picker>
+      </View>
+
+      <View className="ntr-card ntr-card--padded ntr-section">
+        <View className="ntr-section-title">
+          <Text className="ntr-section-title__text">赛事等级</Text>
         </View>
+        <SliderField
+          label="等级"
+          value={levelIndex}
+          min={0}
+          max={LEVEL_OPTIONS.length - 1}
+          marks={LEVEL_OPTIONS}
+          valueText={form.level || '未选择'}
+          onChange={(v) => setField('level', LEVEL_OPTIONS[v] ?? '')}
+        />
       </View>
 
       <View className="ntr-card ntr-card--padded ntr-section">
         <View className="ntr-section-title">
           <Text className="ntr-section-title__text">时间</Text>
         </View>
-        <TimeField
-          label="报名开始时间"
-          date={form.signupDate}
-          time={form.signupTime}
-          onDateChange={(v) => setField('signupDate', v)}
-          onTimeChange={(v) => setField('signupTime', v)}
-        />
-        <TimeField
-          label="开始时间"
-          date={form.startDate}
-          time={form.startTime}
-          onDateChange={(v) => setField('startDate', v)}
-          onTimeChange={(v) => setField('startTime', v)}
-        />
-        <TimeField
-          label="结束时间"
-          date={form.endDate}
-          time={form.endTime}
-          onDateChange={(v) => setField('endDate', v)}
-          onTimeChange={(v) => setField('endTime', v)}
-        />
+        <View className="activity-create__time-grid">
+          <TimeField
+            label="开始时间"
+            date={form.startDate}
+            time={form.startTime}
+            onDateChange={(v) => setField('startDate', v)}
+            onTimeChange={(v) => setField('startTime', v)}
+          />
+          <TimeField
+            label="结束时间"
+            date={form.endDate}
+            time={form.endTime}
+            onDateChange={(v) => setField('endDate', v)}
+            onTimeChange={(v) => setField('endTime', v)}
+          />
+        </View>
       </View>
 
       <View className="ntr-card ntr-card--padded ntr-section">
@@ -283,28 +305,8 @@ export default function ActivityCreatePage() {
             onInput={(e) => setField('locationName', e.detail.value)}
           />
         </View>
-        <View className="ntr-field">
-          <Text className="ntr-field__label">详细地址</Text>
-          <Input
-            className="ntr-input"
-            value={form.locationAddress}
-            placeholder="详细地址"
-            placeholderClass="ntr-input__placeholder"
-            onInput={(e) => setField('locationAddress', e.detail.value)}
-          />
-        </View>
         <View className="ntr-btn ntr-btn--ghost activity-create__map-btn" onClick={chooseLocation}>
           <Text>选择地图</Text>
-        </View>
-        <View className="ntr-field">
-          <Text className="ntr-field__label">场地</Text>
-          <Input
-            className="ntr-input"
-            value={form.venue}
-            placeholder="如：1号场、2号场"
-            placeholderClass="ntr-input__placeholder"
-            onInput={(e) => setField('venue', e.detail.value)}
-          />
         </View>
       </View>
 
@@ -312,47 +314,54 @@ export default function ActivityCreatePage() {
         <View className="ntr-section-title">
           <Text className="ntr-section-title__text">签位与场地</Text>
         </View>
-        <StepperField
-          label="签位人数"
+        <SliderField
+          label="人数"
           value={form.maxPlayers}
           min={2}
           max={32}
-          suffix="人"
+          valueText={`${form.maxPlayers}人`}
           onChange={(v) => setField('maxPlayers', v)}
         />
-        <StepperField
+        <SliderField
           label="场地数量"
           value={form.courtCount}
           min={1}
           max={8}
-          suffix="片"
-          onChange={(v) => setField('courtCount', v)}
+          valueText={`${form.courtCount}片`}
+          onChange={handleCourtCount}
         />
-        <StepperField
-          label="热身分钟"
-          value={form.warmupMinutes}
-          min={0}
-          max={60}
-          suffix="分钟"
-          onChange={(v) => setField('warmupMinutes', v)}
-        />
+        <View className="ntr-field">
+          <Text className="ntr-field__label">场地号</Text>
+          <View className="activity-create__courts">
+            {courtNames.map((name, index) => (
+              <View key={index} className="activity-create__court">
+                <Text className="activity-create__court-index">{index + 1}</Text>
+                <Input
+                  className="ntr-input activity-create__court-input"
+                  value={name}
+                  placeholder={`${index + 1}号场`}
+                  placeholderClass="ntr-input__placeholder"
+                  onInput={(e) => handleCourtName(index, e.detail.value)}
+                />
+              </View>
+            ))}
+          </View>
+        </View>
       </View>
 
       <View className="ntr-card ntr-card--padded ntr-section">
         <View className="ntr-section-title">
           <Text className="ntr-section-title__text">赛制规则</Text>
         </View>
-        <View className="ntr-field">
-          <Text className="ntr-field__label">比分规则</Text>
-          <Picker
-            mode="selector"
-            range={MATCH_RULE_LABELS}
-            value={MATCH_RULES.findIndex((rule) => rule.code === form.matchRuleCode)}
-            onChange={(e) => setField('matchRuleCode', MATCH_RULES[Number(e.detail.value)].code)}
-          >
-            <View className="ntr-input activity-create__picker">{selectedRule.label}</View>
-          </Picker>
-        </View>
+        <SliderField
+          label="比分规则"
+          value={ruleIndex}
+          min={0}
+          max={MATCH_RULES.length - 1}
+          marks={RULE_SHORT_LABELS}
+          valueText={selectedRule.label}
+          onChange={(v) => setField('matchRuleCode', MATCH_RULES[v].code)}
+        />
       </View>
 
       {isKnockout && (

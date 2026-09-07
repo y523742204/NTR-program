@@ -79,6 +79,7 @@ model User {
   wechatOpenId       String?            @unique
   avatarUrl          String?
   gender             ParticipantGender?
+  level              String?
   role               UserRole           @default(USER)
   profileCompletedAt DateTime?          @db.Timestamptz(3)
 

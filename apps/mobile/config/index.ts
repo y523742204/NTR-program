@@ -59,7 +59,7 @@ const config: UserConfigExport = {
   framework: 'react',
   defineConstants: {
     'process.env.NTR_API_BASE_URL': JSON.stringify(
-      process.env.NTR_API_BASE_URL || 'http://127.0.0.1:3000',
+      process.env.NTR_API_BASE_URL || 'http://127.0.0.1:3100',
     ),
     'process.env.TARO_APP_ENABLE_DEV_LOGIN': JSON.stringify(
       process.env.TARO_APP_ENABLE_DEV_LOGIN === '1' || process.env.NODE_ENV !== 'production'

@@ -6,14 +6,57 @@
     color: var(--ntr-text-3);
   }
 
+  &__time-grid {
+    display: flex;
+    gap: 20px;
+
+    .time-field {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  &__courts {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__court {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__court-index {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--ntr-primary-dim);
+    color: var(--ntr-primary);
+    font-size: 26px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__court-input {
+    flex: 1;
+  }
+
   &__preview {
     padding: 24px;
   }
 
   &__thumb {
-    height: 200px;
+    height: 180px;
     border-radius: var(--ntr-radius-md);
-    background: linear-gradient(135deg, var(--ntr-primary) 0%, var(--ntr-accent) 100%);
+    background:
+      radial-gradient(120% 140% at 100% 0%, rgba(31, 157, 102, 0.18) 0%, rgba(31, 157, 102, 0) 55%),
+      linear-gradient(135deg, #ffffff 0%, #f1f6f3 100%);
+    border: 1px solid var(--ntr-line);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -30,12 +73,12 @@
     width: 220px;
     height: 220px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.14);
+    background: rgba(31, 157, 102, 0.08);
   }
 
   &__thumb-title {
     position: relative;
-    color: #ffffff;
+    color: var(--ntr-text);
     font-size: 44px;
     font-weight: 800;
     letter-spacing: 1px;
@@ -44,7 +87,7 @@
   &__thumb-sub {
     position: relative;
     margin-top: 10px;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--ntr-text-3);
     font-size: 24px;
   }
 
@@ -71,12 +114,6 @@
   &__map-btn {
     height: 76px;
     margin-bottom: 28px;
-  }
-
-  &__picker {
-    height: 88px;
-    line-height: 88px;
-    padding: 0 24px;
   }
 
   &__submit {

@@ -95,6 +95,7 @@ export default function ProfilePage() {
           <View className="profile-head__info">
             <View className="profile-head__name-row">
               <Text className="profile-head__name">{user.name?.trim() || '未设置昵称'}</Text>
+              {user.level && <Text className="ntr-tag ntr-tag--muted">{user.level}</Text>}
               <Text className={`ntr-tag ${roleClass}`}>{roleTag}</Text>
             </View>
             <Text className="profile-head__phone">{maskedPhone}</Text>

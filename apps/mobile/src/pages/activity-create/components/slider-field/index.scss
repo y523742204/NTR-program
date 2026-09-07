@@ -1,0 +1,36 @@
+.slider-field {
+  margin-bottom: 28px;
+
+  &__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 8px;
+
+    .ntr-field__label {
+      margin-bottom: 0;
+    }
+  }
+
+  &__value {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--ntr-primary);
+  }
+
+  &__slider {
+    margin: 8px 0 4px;
+  }
+
+  &__marks {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding: 0 4px;
+  }
+
+  &__mark {
+    font-size: 22px;
+    color: var(--ntr-text-3);
+  }
+}

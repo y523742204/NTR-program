@@ -81,7 +81,7 @@ export default function AdminUsersPage() {
     const modal = await Taro.showModal({
       title: '设为管理员',
       content: `确认将「${user.name}」设为管理员？`,
-      confirmColor: '#35E69C',
+      confirmColor: '#1f9d66',
     });
     if (!modal.confirm) return;
     setBusyUserId(user.userId);

@@ -18,6 +18,30 @@
   line-height: 1.6;
 }
 
+.profile-detail-levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.profile-detail-level {
+  min-width: 88px;
+  padding: 16px 0;
+  text-align: center;
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--ntr-text-2);
+  background: var(--ntr-surface-2, #f4f7f5);
+  border: 2px solid var(--ntr-line);
+  border-radius: var(--ntr-radius-md);
+}
+
+.profile-detail-level--active {
+  color: var(--ntr-primary);
+  background: var(--ntr-primary-dim);
+  border-color: var(--ntr-primary);
+}
+
 .profile-detail-save {
   margin-top: 48px;
 }

@@ -102,7 +102,7 @@ export class ActivitiesService {
       startAt: dto.startAt,
       endAt: dto.endAt,
       locationName: dto.locationName,
-      locationAddress: dto.locationAddress,
+      locationAddress: dto.locationAddress ?? '',
       latitude: dto.latitude ?? null,
       longitude: dto.longitude ?? null,
       venue: dto.venue ?? null,

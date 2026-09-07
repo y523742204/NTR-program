@@ -1,8 +1,14 @@
 import { Transform, type TransformFnParams } from 'class-transformer';
 import { IsIn, IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator';
-import type { ParticipantGender, UpdateAuthProfileRequest } from '@ntr/shared';
+import {
+  PLAYER_LEVELS,
+  type ParticipantGender,
+  type UpdateAuthProfileRequest,
+  type PlayerLevel,
+} from '@ntr/shared';
 
 const PROFILE_GENDERS: readonly ParticipantGender[] = ['MALE', 'FEMALE'];
+const PROFILE_LEVELS: readonly PlayerLevel[] = [...PLAYER_LEVELS];
 const AVATAR_PATH_PATTERN = /^\/uploads\/avatars\/[0-9a-f-]+\.(?:jpe?g|png|webp)$/;
 
 export class UpdateAuthProfileDto implements UpdateAuthProfileRequest {
@@ -18,6 +24,10 @@ export class UpdateAuthProfileDto implements UpdateAuthProfileRequest {
   @IsOptional()
   @IsIn(PROFILE_GENDERS)
   gender?: ParticipantGender;
+
+  @IsOptional()
+  @IsIn(PROFILE_LEVELS)
+  level?: PlayerLevel;
 
   @IsOptional()
   @IsString()
