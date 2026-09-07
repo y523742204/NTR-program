@@ -42,7 +42,7 @@ export default function ProfilePage() {
     const modal = await Taro.showModal({
       title: '退出登录',
       content: '确认退出当前账号？',
-      confirmColor: '#FF5C5B',
+      confirmColor: '#FF6B5E',
     });
     if (!modal.confirm) return;
     try {
@@ -65,20 +65,20 @@ export default function ProfilePage() {
     );
   }
 
-  const functionRows = [
-    { label: '我的报名', value: '', url: '/pages/signup-records/index' },
-    { label: '我的战绩', value: '', url: '/pages/my-matches/index' },
+  const featureGrid = [
+    { label: '报名记录', icon: '▤', url: '/pages/signup-records/index' },
+    { label: '我的战绩', icon: '◆', url: '/pages/my-matches/index' },
   ];
 
   const adminRows = [
-    { label: '发布赛事', value: '', url: '/pages/activity-create/index' },
-    { label: '用户管理', value: '', url: '/pages/admin-users/index' },
-    { label: '赛事列表', value: '', url: HOME_TABS.activities },
+    { label: '发布赛事', url: '/pages/activity-create/index' },
+    { label: '用户管理', url: '/pages/admin-users/index' },
+    { label: '赛事列表', url: HOME_TABS.activities },
   ];
 
   return (
     <View className="ntr-page profile-page">
-      <View className="ntr-card ntr-card--padded">
+      <View className="ntr-card ntr-card--padded profile-head-card">
         <View className="profile-head">
           <View className="ntr-avatar profile-head__avatar">
             {user.avatarUrl ? (
@@ -94,22 +94,28 @@ export default function ProfilePage() {
             </View>
             <Text className="profile-head__phone">{maskedPhone}</Text>
           </View>
-          {user.profileCompleted === false && (
-            <View
-              className="ntr-btn ntr-btn--primary ntr-btn--sm profile-head__btn"
-              onClick={() => go('/pages/profile-detail/index')}
-            >
-              <Text>完善资料</Text>
+          <View className="profile-head__right">
+            {user.profileCompleted === false && (
+              <View
+                className="ntr-btn ntr-btn--primary ntr-btn--sm profile-head__btn"
+                onClick={() => go('/pages/profile-detail/index')}
+              >
+                <Text>完善资料</Text>
+              </View>
+            )}
+            <View className="profile-head__link" onClick={() => go('/pages/profile-detail/index')}>
+              <Text className="profile-head__link-text">个人资料</Text>
+              <Text className="profile-row__arrow">›</Text>
             </View>
-          )}
+          </View>
         </View>
       </View>
 
-      <View className="profile-group">
-        {functionRows.map((row) => (
-          <View key={row.label} className="ntr-row" onClick={() => go(row.url)}>
-            <Text className="ntr-row__label">{row.label}</Text>
-            <Text className="profile-row__arrow">›</Text>
+      <View className="profile-grid">
+        {featureGrid.map((item) => (
+          <View key={item.label} className="profile-grid__item" onClick={() => go(item.url)}>
+            <View className="profile-grid__icon">{item.icon}</View>
+            <Text className="profile-grid__label">{item.label}</Text>
           </View>
         ))}
       </View>

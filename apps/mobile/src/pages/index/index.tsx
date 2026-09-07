@@ -1,10 +1,10 @@
 import Taro, { useDidShow, usePullDownRefresh, useReachBottom } from '@tarojs/taro';
-import { Text, View } from '@tarojs/components';
+import { Image, Text, View } from '@tarojs/components';
 import { useCallback, useEffect, useState } from 'react';
 
 import type { ActivityListItemResponse, ActivityListResponse } from '@ntr/shared';
 
-import { apiRequest } from '../../services/api';
+import { apiRequest, resolveApiAssetUrl } from '../../services/api';
 import { syncHomeTabBar } from '../../services/tab-navigation';
 import { formatRange, getActivityPhase, modeLabel, PHASE_LABEL } from '../../utils/format';
 
@@ -15,7 +15,7 @@ type ModeFilter = 'ALL' | 'ROUND_ROBIN' | 'GROUP_KNOCKOUT';
 
 const PHASE_FILTERS: { value: PhaseFilter; label: string }[] = [
   { value: 'ALL', label: '全部' },
-  { value: 'UPCOMING', label: '未开始' },
+  { value: 'UPCOMING', label: '报名中' },
   { value: 'ONGOING', label: '进行中' },
   { value: 'FINISHED', label: '已结束' },
 ];
@@ -35,6 +35,14 @@ function ActivityCard({ activity }: { activity: ActivityListItemResponse }) {
       ? Math.min(100, Math.round((activity.signupCount / activity.maxPlayers) * 100))
       : 0;
   const full = activity.signupCount >= activity.maxPlayers && activity.maxPlayers > 0;
+  const phaseTag =
+    phase === 'FINISHED'
+      ? 'ntr-tag--muted'
+      : phase === 'ONGOING'
+        ? 'ntr-tag--accent'
+        : 'ntr-tag--primary';
+  const actionLabel = phase === 'UPCOMING' ? '报名中' : phase === 'ONGOING' ? '进行中' : '已结束';
+
   return (
     <View
       className="act-card"
@@ -42,38 +50,50 @@ function ActivityCard({ activity }: { activity: ActivityListItemResponse }) {
         void Taro.navigateTo({ url: `/pages/activity-detail/index?id=${activity.id}` })
       }
     >
-      <View className="act-card__top">
-        <Text className="ntr-tag ntr-tag--primary">{modeLabel(activity.mode)}</Text>
-        <Text
-          className={`ntr-tag ${
-            phase === 'FINISHED'
-              ? 'ntr-tag--muted'
-              : phase === 'ONGOING'
-                ? 'ntr-tag--accent'
-                : 'ntr-tag--primary'
-          }`}
-        >
-          {PHASE_LABEL[phase]}
-        </Text>
+      <View className="act-card__cover">
+        {activity.coverImageUrl ? (
+          <Image
+            className="act-card__cover-img"
+            src={resolveApiAssetUrl(activity.coverImageUrl)}
+            mode="aspectFill"
+          />
+        ) : (
+          <View className="act-card__cover-placeholder" />
+        )}
+        <View className="act-card__cover-tags">
+          <Text className="ntr-tag ntr-tag--primary">{modeLabel(activity.mode)}</Text>
+          <Text className={`ntr-tag ${phaseTag}`}>{PHASE_LABEL[phase]}</Text>
+        </View>
         {activity.schedulePublished && (
           <Text className="ntr-tag ntr-tag--muted act-card__published">赛程已发布</Text>
         )}
-        <Text className={`act-card__count ${full ? 'act-card__count--full' : ''}`}>
-          {activity.signupCount}/{activity.maxPlayers} 人
-        </Text>
       </View>
-      <Text className="act-card__title">{activity.title}</Text>
-      <View className="act-card__meta">
-        <Text className="act-card__meta-icon">◷</Text>
-        <Text className="act-card__meta-text">{formatRange(activity.startAt, activity.endAt)}</Text>
-      </View>
-      <View className="act-card__meta">
-        <Text className="act-card__meta-icon">◎</Text>
-        <Text className="act-card__meta-text">{activity.locationName}</Text>
-        <Text className="act-card__meta-courts">{activity.courtCount} 片场地</Text>
-      </View>
-      <View className="act-card__progress">
-        <View className="act-card__progress-inner" style={{ width: `${percent}%` }} />
+      <View className="act-card__body">
+        <Text className="act-card__title">{activity.title}</Text>
+        <View className="act-card__meta">
+          <Text className="act-card__meta-icon">◷</Text>
+          <Text className="act-card__meta-text">
+            {formatRange(activity.startAt, activity.endAt)}
+          </Text>
+        </View>
+        <View className="act-card__meta">
+          <Text className="act-card__meta-icon">◎</Text>
+          <Text className="act-card__meta-text">{activity.locationName}</Text>
+          <Text className="act-card__meta-courts">{activity.courtCount} 片场地</Text>
+        </View>
+        <View className="act-card__foot">
+          <View className="act-card__progress">
+            <View className="act-card__progress-inner" style={{ width: `${percent}%` }} />
+          </View>
+          <Text className={`act-card__count ${full ? 'act-card__count--full' : ''}`}>
+            {activity.signupCount}/{activity.maxPlayers} 人
+          </Text>
+          <View
+            className={`act-card__action ${phase === 'FINISHED' ? 'act-card__action--muted' : ''}`}
+          >
+            <Text>{actionLabel}</Text>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -134,38 +154,36 @@ export default function IndexPage() {
     <View className="ntr-page index-page">
       <View className="index-hero">
         <View className="index-hero__logo">
-          <View className="index-hero__brand">
-            <Text className="index-hero__brand-ntr">NTR</Text>
-            <View className="index-hero__brand-dot" />
-          </View>
-          <Text className="index-hero__tagline">单打网球赛事 · 循环与淘汰</Text>
+          <Text className="index-hero__brand-ntr">NTR</Text>
+          <View className="index-hero__brand-dot" />
         </View>
-        <View className="index-hero__line" />
+        <Text className="index-hero__tagline">单打网球赛事 · 循环与淘汰</Text>
       </View>
 
-      <View className="index-filters">
-        <View className="ntr-seg index-filters__row">
-          {PHASE_FILTERS.map((item) => (
-            <View
-              key={item.value}
-              className={`ntr-seg__item ${phase === item.value ? 'ntr-seg__item--active' : ''}`}
-              onClick={() => setPhase(item.value)}
-            >
-              {item.label}
-            </View>
-          ))}
-        </View>
-        <View className="ntr-seg index-filters__row">
-          {MODE_FILTERS.map((item) => (
-            <View
-              key={item.value}
-              className={`ntr-seg__item ${mode === item.value ? 'ntr-seg__item--active' : ''}`}
-              onClick={() => setMode(item.value)}
-            >
-              {item.label}
-            </View>
-          ))}
-        </View>
+      <View className="index-tabs">
+        {PHASE_FILTERS.map((item) => (
+          <View
+            key={item.value}
+            className={`index-tabs__item ${phase === item.value ? 'index-tabs__item--active' : ''}`}
+            onClick={() => setPhase(item.value)}
+          >
+            {item.label}
+          </View>
+        ))}
+      </View>
+
+      <View className="index-chips">
+        {MODE_FILTERS.map((item) => (
+          <View
+            key={item.value}
+            className={`index-chips__item ${
+              mode === item.value ? 'index-chips__item--active' : ''
+            }`}
+            onClick={() => setMode(item.value)}
+          >
+            {item.label}
+          </View>
+        ))}
       </View>
 
       <View className="index-list">

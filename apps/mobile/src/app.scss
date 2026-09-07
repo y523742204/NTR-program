@@ -1,17 +1,17 @@
-/* ===== NTR 暗色竞技风设计系统 ===== */
+/* ===== NTR 清新绿设计系统 ===== */
 page {
-  --ntr-bg: #0a0f0d;
-  --ntr-surface: #131b18;
-  --ntr-surface-2: #1a2622;
-  --ntr-line: #22312b;
-  --ntr-primary: #35e69c;
-  --ntr-primary-dim: rgba(53, 230, 156, 0.12);
-  --ntr-accent: #d8ff3e;
-  --ntr-danger: #ff5c5b;
-  --ntr-warn: #ffc53d;
-  --ntr-text: #eef7f2;
-  --ntr-text-2: #9fb8ac;
-  --ntr-text-3: #68857a;
+  --ntr-bg: #f2f8f4;
+  --ntr-surface: #ffffff;
+  --ntr-surface-2: #e6f2ea;
+  --ntr-line: #d5e8dc;
+  --ntr-primary: #2fbf7f;
+  --ntr-primary-dim: rgba(47, 191, 127, 0.12);
+  --ntr-accent: #1fa673;
+  --ntr-danger: #ff6b5e;
+  --ntr-warn: #ffb43d;
+  --ntr-text: #153428;
+  --ntr-text-2: #5f7a6c;
+  --ntr-text-3: #8fa89b;
   --ntr-safe-bottom: env(safe-area-inset-bottom);
 
   min-height: 100%;
@@ -102,8 +102,8 @@ input {
 }
 
 .ntr-btn--primary {
-  background: linear-gradient(135deg, var(--ntr-primary), #2bc98a);
-  color: #06120c;
+  background: linear-gradient(135deg, var(--ntr-primary), #25a86c);
+  color: #ffffff;
 }
 
 .ntr-btn--ghost {
@@ -114,7 +114,7 @@ input {
 
 .ntr-btn--danger {
   background: transparent;
-  border: 2px solid rgba(255, 92, 91, 0.4);
+  border: 2px solid rgba(255, 107, 94, 0.4);
   color: var(--ntr-danger);
 }
 
@@ -146,22 +146,22 @@ input {
 }
 
 .ntr-tag--accent {
-  background: rgba(216, 255, 62, 0.12);
-  color: var(--ntr-accent);
+  background: rgba(123, 224, 172, 0.22);
+  color: #1e9a63;
 }
 
 .ntr-tag--muted {
-  background: rgba(104, 133, 122, 0.16);
+  background: rgba(143, 168, 155, 0.18);
   color: var(--ntr-text-2);
 }
 
 .ntr-tag--danger {
-  background: rgba(255, 92, 91, 0.12);
+  background: rgba(255, 107, 94, 0.14);
   color: var(--ntr-danger);
 }
 
 .ntr-tag--warn {
-  background: rgba(255, 197, 61, 0.12);
+  background: rgba(255, 180, 61, 0.16);
   color: var(--ntr-warn);
 }
 

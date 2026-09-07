@@ -1,3 +1,7 @@
+.profile-head-card {
+  padding: 28px 24px;
+}
+
 .profile-head {
   display: flex;
   align-items: center;
@@ -37,10 +41,66 @@
   color: var(--ntr-text-3);
 }
 
+.profile-head__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
 .profile-head__btn {
   flex-shrink: 0;
 }
 
+.profile-head__link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ntr-text-3);
+}
+
+.profile-head__link-text {
+  font-size: 24px;
+}
+
+/* ---------- 功能宫格 ---------- */
+.profile-grid {
+  margin-top: 24px;
+  display: flex;
+  gap: 20px;
+}
+
+.profile-grid__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 0;
+  background: var(--ntr-surface);
+  border: 2px solid var(--ntr-line);
+  border-radius: 16px;
+}
+
+.profile-grid__icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--ntr-primary-dim);
+  color: var(--ntr-primary);
+  font-size: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-grid__label {
+  font-size: 26px;
+  color: var(--ntr-text);
+}
+
+/* ---------- 列表组 ---------- */
 .profile-group {
   margin-top: 24px;
   border: 2px solid var(--ntr-line);

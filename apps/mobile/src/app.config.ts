@@ -18,16 +18,16 @@ export default defineAppConfig({
   ...(isWeapp ? { componentFramework: 'glass-easel' as const } : {}),
   window: {
     backgroundTextStyle: 'dark',
-    navigationBarBackgroundColor: '#0A0F0D',
+    navigationBarBackgroundColor: '#F2F8F4',
     navigationBarTitleText: 'NTR',
-    navigationBarTextStyle: 'white',
+    navigationBarTextStyle: 'black',
   },
   tabBar: {
     custom: isWeapp,
-    color: '#68857A',
-    selectedColor: '#35E69C',
-    backgroundColor: '#0A0F0D',
-    borderStyle: 'black',
+    color: '#8FA89B',
+    selectedColor: '#2FBF7F',
+    backgroundColor: '#FFFFFF',
+    borderStyle: 'white',
     list: [
       { pagePath: 'pages/index/index', text: '赛事' },
       { pagePath: 'pages/profile/index', text: '我的' },
