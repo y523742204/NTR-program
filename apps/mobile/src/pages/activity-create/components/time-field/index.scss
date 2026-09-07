@@ -12,8 +12,8 @@
     line-height: 88px;
     text-align: center;
     background: var(--ntr-surface);
-    border: 2px solid var(--ntr-line);
-    border-radius: 14px;
+    border: 1px solid var(--ntr-line);
+    border-radius: var(--ntr-radius-md);
     color: var(--ntr-text);
     font-size: 30px;
   }

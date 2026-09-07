@@ -6,9 +6,10 @@
   display: flex;
   gap: 16px;
   padding: 24px;
-  border-radius: 16px;
+  border-radius: var(--ntr-radius-lg);
   background: var(--ntr-surface);
-  border: 2px solid var(--ntr-line);
+  border: 1px solid var(--ntr-line);
+  box-shadow: var(--ntr-shadow-card);
   margin-bottom: 28px;
 }
 
@@ -54,9 +55,10 @@
 
 .bk-cell {
   position: relative;
-  border: 2px solid var(--ntr-line);
-  border-radius: 12px;
+  border: 1px solid var(--ntr-line);
+  border-radius: var(--ntr-radius-md);
   background: var(--ntr-surface);
+  box-shadow: var(--ntr-shadow-sm);
   overflow: hidden;
 }
 
@@ -66,7 +68,7 @@
   height: 66px;
   padding: 0 20px;
   gap: 12px;
-  border-bottom: 2px solid var(--ntr-line);
+  border-bottom: 1px solid var(--ntr-line);
 }
 
 .bk-player:last-child {
@@ -103,7 +105,7 @@
   height: 12px;
   border-radius: 50%;
   background: var(--ntr-warn);
-  box-shadow: 0 0 12px rgba(255, 197, 61, 0.7);
+  box-shadow: 0 0 0 4px rgba(233, 161, 59, 0.16);
 }
 
 .bk-done::after {

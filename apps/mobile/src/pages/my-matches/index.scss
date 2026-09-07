@@ -9,7 +9,7 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  border-right: 2px solid var(--ntr-line);
+  border-right: 1px solid var(--ntr-line);
 }
 
 .matches-summary__item:last-child {
@@ -161,7 +161,7 @@
   justify-content: space-between;
   margin-top: 16px;
   padding-top: 14px;
-  border-top: 2px solid var(--ntr-line);
+  border-top: 1px solid var(--ntr-line);
 }
 
 .rec-card__meta {
