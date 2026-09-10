@@ -8,12 +8,8 @@
 
   &__time-grid {
     display: flex;
+    flex-direction: column;
     gap: 20px;
-
-    .time-field {
-      flex: 1;
-      min-width: 0;
-    }
   }
 
   &__courts {

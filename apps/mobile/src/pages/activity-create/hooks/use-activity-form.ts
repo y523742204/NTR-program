@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { ACTIVITY_MODES, type ActivityMode, type MatchRuleCode } from '@ntr/shared';
 
@@ -79,26 +79,24 @@ export function buildAutoTitle(
 export function useActivityForm(initial?: Partial<ActivityForm>) {
   const [form, setForm] = useState<ActivityForm>({ ...initForm(), ...initial });
 
-  function setField<K extends keyof ActivityForm>(key: K, value: ActivityForm[K]) {
+  const setField = useCallback(<K extends keyof ActivityForm>(key: K, value: ActivityForm[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
-  }
+  }, []);
 
-  function setLocation(location: LocationPick) {
+  const setLocation = useCallback((location: LocationPick) => {
     setForm((prev) => ({
       ...prev,
       locationName: location.name,
       latitude: location.latitude,
       longitude: location.longitude,
     }));
-  }
+  }, []);
 
-  function replace(patch: Partial<ActivityForm>) {
+  const replace = useCallback((patch: Partial<ActivityForm>) => {
     setForm((prev) => ({ ...prev, ...patch }));
-  }
+  }, []);
 
-  function iso(date: string, time: string): string {
-    return `${date}T${time}:00`;
-  }
+  const iso = useCallback((date: string, time: string) => `${date}T${time}:00`, []);
 
   return { form, setField, setLocation, replace, iso };
 }

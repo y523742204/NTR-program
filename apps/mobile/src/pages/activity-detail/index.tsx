@@ -146,6 +146,28 @@ export default function ActivityDetailPage() {
     }
   }
 
+  async function removeActivity() {
+    const modal = await Taro.showModal({
+      title: '删除赛事',
+      content: '删除后赛事及其报名、赛程、比分将全部清除且不可恢复，确认删除？',
+      confirmColor: '#FF5C5B',
+    });
+    if (!modal.confirm) return;
+    try {
+      await apiRequest<void>({ path: `/activities/${activityId}`, method: 'DELETE' });
+      void Taro.showToast({ title: '已删除', icon: 'success' });
+      setTimeout(() => {
+        if (Taro.getCurrentPages().length > 1) void Taro.navigateBack();
+        else void Taro.reLaunch({ url: '/pages/index/index' });
+      }, 800);
+    } catch (err) {
+      void Taro.showToast({
+        title: (err as { message?: string }).message ?? '删除失败',
+        icon: 'none',
+      });
+    }
+  }
+
   if (error) {
     return (
       <View className="ntr-empty">
@@ -206,6 +228,14 @@ export default function ActivityDetailPage() {
               >
                 管理 ›
               </Text>
+              {isAdmin && (
+                <Text
+                  className="detail-hero__manage detail-hero__manage--danger"
+                  onClick={() => void removeActivity()}
+                >
+                  删除
+                </Text>
+              )}
             </View>
           )}
         </View>

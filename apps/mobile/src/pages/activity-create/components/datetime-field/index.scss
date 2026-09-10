@@ -1,4 +1,14 @@
 .datetime-field {
+  &__row {
+    display: flex;
+    gap: 16px;
+  }
+
+  &__picker {
+    flex: 1;
+    min-width: 0;
+  }
+
   &__value {
     height: 76px;
     line-height: 76px;

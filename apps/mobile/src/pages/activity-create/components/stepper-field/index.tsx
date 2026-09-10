@@ -1,5 +1,7 @@
 import { Text, View } from '@tarojs/components';
 
+import './index.scss';
+
 interface StepperFieldProps {
   label: string;
   value: number;

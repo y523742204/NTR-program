@@ -1,5 +1,7 @@
 import { Slider, Text, View } from '@tarojs/components';
 
+import './index.scss';
+
 interface SliderFieldProps {
   label: string;
   value: number;
@@ -11,6 +13,8 @@ interface SliderFieldProps {
   onChange: (value: number) => void;
 }
 
+const BLOCK_SIZE = 28;
+
 export default function SliderField({
   label,
   value,
@@ -21,6 +25,7 @@ export default function SliderField({
   valueText,
   onChange,
 }: SliderFieldProps) {
+  const span = max - min || 1;
   return (
     <View className="slider-field">
       <View className="slider-field__head">
@@ -35,13 +40,17 @@ export default function SliderField({
         value={value}
         activeColor="#1f9d66"
         backgroundColor="#e4e7ea"
-        blockSize={28}
+        blockSize={BLOCK_SIZE}
         onChange={(e) => onChange(Number(e.detail.value))}
       />
       {marks && (
         <View className="slider-field__marks">
-          {marks.map((mark) => (
-            <Text key={mark} className="slider-field__mark">
+          {marks.map((mark, index) => (
+            <Text
+              key={mark}
+              className="slider-field__mark"
+              style={{ left: `${(index * step * 100) / span}%` }}
+            >
               {mark}
             </Text>
           ))}

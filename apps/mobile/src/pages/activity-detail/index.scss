@@ -9,8 +9,10 @@
 
 .detail-hero__top {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
+  row-gap: 16px;
 }
 
 .detail-hero__count {
@@ -30,6 +32,10 @@
 .detail-hero__manage {
   font-size: 24px;
   color: var(--ntr-primary);
+}
+
+.detail-hero__manage--danger {
+  color: var(--ntr-danger);
 }
 
 .detail-hero__title {

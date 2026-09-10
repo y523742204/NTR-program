@@ -109,7 +109,7 @@ export default function ActivityCreatePage() {
         longitude: data.longitude ?? undefined,
         maxPlayers: data.maxPlayers,
         courtCount: data.courtCount,
-        matchRuleCode: data.matchRuleCode,
+        matchRuleCode: getMatchRule(data.matchRuleCode).code,
         groupCount: data.groupCount ?? 2,
         qualifyPerGroup: data.qualifyPerGroup ?? 1,
         enableThirdPlace: data.enableThirdPlace ?? false,
