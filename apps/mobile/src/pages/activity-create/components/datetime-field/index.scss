@@ -1,18 +1,16 @@
-.time-field {
-  &__item {
+.datetime-field {
+  &__value {
     height: 76px;
     line-height: 76px;
+    padding: 0 20px;
     text-align: center;
     background: var(--ntr-surface);
     border: 1px solid var(--ntr-line);
     border-radius: var(--ntr-radius-sm);
     color: var(--ntr-text);
     font-size: 26px;
+    font-variant-numeric: tabular-nums;
     overflow: hidden;
     white-space: nowrap;
-  }
-
-  &__item + &__item {
-    margin-top: 16px;
   }
 }

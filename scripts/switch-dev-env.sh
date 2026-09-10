@@ -14,13 +14,13 @@
 # 切换前自动把当前 .env.local 备份为 .env.local.bak-<时间戳>。
 #
 # --full 额外流程:
-#   1) 停止本项目 API/小程序进程并等待 3000 端口释放
+#   1) 停止本项目 API/小程序进程并等待 3100 端口释放
 #   2) 轮转 .dev-logs/api.log（时间戳备份只保留最近 5 份）
 #   3) 在 API watcher 启动前生成 Prisma Client（避免运行中整包重写触发重启竞态）
 #   4) 启动 API 并做健康检查，重新编译小程序后再做一次最终确认
 #
 # 环境变量:
-#   LOCAL_API_URL  本地环境小程序 API 地址（默认 http://127.0.0.1:3000，真机调试改为局域网 IP）
+#   LOCAL_API_URL  本地环境小程序 API 地址（默认 http://127.0.0.1:3100，真机调试改为局域网 IP）
 
 set -uo pipefail
 
@@ -30,7 +30,7 @@ cd "$ROOT"
 TARGET=""
 FULL=0
 DRY_RUN=0
-LOCAL_API_URL="${LOCAL_API_URL:-http://127.0.0.1:3000}"
+LOCAL_API_URL="${LOCAL_API_URL:-http://127.0.0.1:3100}"
 
 for arg in "$@"; do
   case "$arg" in
@@ -124,17 +124,17 @@ if [ "$FULL" -eq 1 ]; then
     run kill -TERM $WATCH_PIDS
   fi
 
-  # 等待 3000 释放；仍有残留则强杀，避免新旧 watcher 抢同一 dist/端口
+  # 等待 3100 释放；仍有残留则强杀，避免新旧 watcher 抢同一 dist/端口
   if [ "$DRY_RUN" -eq 1 ]; then
-    printf '\033[1;34m[plan]\033[0m 等待端口 3000 释放并清理残留 API 进程\n'
+    printf '\033[1;34m[plan]\033[0m 等待端口 3100 释放并清理残留 API 进程\n'
   else
     sleep 2
     for _ in 1 2 3 4 5; do
-      nc -z -G 1 127.0.0.1 3000 >/dev/null 2>&1 || break
+      nc -z -G 1 127.0.0.1 3100 >/dev/null 2>&1 || break
       sleep 1
     done
-    if nc -z -G 1 127.0.0.1 3000 >/dev/null 2>&1; then
-      warn "3000 端口仍被占用，强制结束残留 API 进程"
+    if nc -z -G 1 127.0.0.1 3100 >/dev/null 2>&1; then
+      warn "3100 端口仍被占用，强制结束残留 API 进程"
       REMAIN_PIDS="$(pgrep -f "$API_PATTERN" 2>/dev/null || true)"
       if [ -n "$REMAIN_PIDS" ]; then
         run kill -KILL $REMAIN_PIDS
@@ -179,13 +179,13 @@ if [ "$FULL" -eq 1 ]; then
     nohup pnpm --filter @ntr/api dev >> .dev-logs/api.log 2>&1 &
     ok "API 已启动（pid $!），等待健康检查..."
     sleep 8
-    if curl -s -m 5 http://127.0.0.1:3000/health >/dev/null 2>&1; then
-      ok "API 健康检查通过（http://127.0.0.1:3000/health）"
+    if curl -s -m 5 http://127.0.0.1:3100/health >/dev/null 2>&1; then
+      ok "API 健康检查通过（http://127.0.0.1:3100/health）"
     else
       warn "首次健康检查未通过，再等待 8s 重试（watch 首次编译可能较慢）"
       sleep 8
-      if curl -s -m 5 http://127.0.0.1:3000/health >/dev/null 2>&1; then
-        ok "API 健康检查通过（http://127.0.0.1:3000/health）"
+      if curl -s -m 5 http://127.0.0.1:3100/health >/dev/null 2>&1; then
+        ok "API 健康检查通过（http://127.0.0.1:3100/health）"
       else
         printf '\n\033[1;31m[error]\033[0m API 健康检查未通过，最近日志：\n' >&2
         tail -n 40 .dev-logs/api.log >&2
@@ -196,7 +196,7 @@ if [ "$FULL" -eq 1 ]; then
 
   say "重新编译小程序（一次性构建）"
   if [ "$TARGET" = "remote" ]; then
-    run pnpm build:mobile:dev
+    run pnpm build:mobile:test
   else
     run env NTR_API_BASE_URL="$LOCAL_API_URL" pnpm --filter @ntr/mobile build
   fi
@@ -204,8 +204,8 @@ if [ "$FULL" -eq 1 ]; then
     URLS="$(rg -o 'https?://[a-zA-Z0-9.\-]+(:[0-9]+)?' apps/mobile/dist/weapp/common.js 2>/dev/null | sort -u | tr '\n' ' ')"
     ok "小程序产物 API 地址: ${URLS:-未知}"
     # 最终确认：覆盖 nest watch 偶发重启崩溃的窗口
-    if curl -s -m 5 http://127.0.0.1:3000/health >/dev/null 2>&1; then
-      ok "API 最终确认正常（http://127.0.0.1:3000/health）"
+    if curl -s -m 5 http://127.0.0.1:3100/health >/dev/null 2>&1; then
+      ok "API 最终确认正常（http://127.0.0.1:3100/health）"
     else
       printf '\n\033[1;31m[error]\033[0m API 在小程序构建期间退出，最近日志：\n' >&2
       tail -n 40 .dev-logs/api.log >&2

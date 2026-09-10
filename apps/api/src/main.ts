@@ -9,7 +9,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('API_PORT', 3000);
+  const port = configService.get<number>('API_PORT', 3100);
   const uploadRoot = resolve(configService.get<string>('UPLOAD_ROOT') || 'uploads');
 
   app.enableCors();

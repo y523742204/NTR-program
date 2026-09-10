@@ -111,7 +111,7 @@ export class ActivitiesService {
       courtCount: dto.courtCount,
       maxPlayers: dto.maxPlayers,
       warmupMinutes: dto.warmupMinutes ?? 10,
-      matchRuleCode: dto.matchRuleCode ?? 'SIX_GAMES_6_TB',
+      matchRuleCode: dto.matchRuleCode ?? 'FOUR_GAMES_NO_AD',
       groupCount: dto.groupCount ?? null,
       qualifyPerGroup: dto.qualifyPerGroup ?? null,
       enableThirdPlace: dto.enableThirdPlace ?? null,

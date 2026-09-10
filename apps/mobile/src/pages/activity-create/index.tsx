@@ -15,17 +15,22 @@ import { apiRequest } from '../../services/api';
 import { requireLogin } from '../../services/guard';
 import KnockoutOptions from './components/knockout-options';
 import SliderField from './components/slider-field';
-import TimeField from './components/time-field';
+import DateTimeField from './components/datetime-field';
 import { buildAutoTitle, LEVEL_OPTIONS, useActivityForm } from './hooks/use-activity-form';
 
 import './index.scss';
 
 const MODE_OPTIONS: { value: ActivityMode; label: string; tip: string }[] = [
-  { value: ACTIVITY_MODES.ROUND_ROBIN, label: '单打循环赛', tip: '灵活人数全场互赛' },
-  { value: ACTIVITY_MODES.GROUP_KNOCKOUT, label: '单打淘汰赛', tip: '标准 4~32 人（8人=2组×4）' },
+  { value: ACTIVITY_MODES.ROUND_ROBIN, label: '单打循环赛', tip: '灵活人数全场循环' },
+  { value: ACTIVITY_MODES.GROUP_KNOCKOUT, label: '单打淘汰赛', tip: '标准4人制小组赛+ 淘汰赛' },
 ];
 
-const RULE_SHORT_LABELS = MATCH_RULES.map((rule) => rule.shortLabel);
+const GAMES_OPTIONS = [4, 5, 6] as const;
+const GAMES_LABELS: Record<number, string> = { 4: '四局', 5: '五局', 6: '六局' };
+const DEUCE_OPTIONS = [
+  { value: true, label: '金球' },
+  { value: false, label: '占先' },
+] as const;
 
 function splitDateTime(iso: string): { date: string; time: string } {
   const d = new Date(iso);
@@ -46,6 +51,10 @@ function buildCourtNames(venue: string, count: number): string[] {
   return Array.from({ length: count }, (_, i) => names[i] ?? `${i + 1}号场`);
 }
 
+function ruleGames(rule: ReturnType<typeof getMatchRule>): number {
+  return rule.targetGames;
+}
+
 export default function ActivityCreatePage() {
   const editingId = Taro.getCurrentInstance().router?.params?.id;
   const isEdit = Boolean(editingId);
@@ -60,18 +69,26 @@ export default function ActivityCreatePage() {
     (option) => option.value === form.mode,
   ) as (typeof MODE_OPTIONS)[number];
   const isKnockout = form.mode === ACTIVITY_MODES.GROUP_KNOCKOUT;
-  const selectedRule = getMatchRule(form.matchRuleCode);
   const autoTitle = buildAutoTitle(form);
   const levelIndex = Math.max(0, LEVEL_OPTIONS.indexOf(form.level));
-  const ruleIndex = Math.max(
+  const selectedRule = getMatchRule(form.matchRuleCode);
+  const gamesIndex = Math.max(
     0,
-    MATCH_RULES.findIndex((rule) => rule.code === form.matchRuleCode),
+    GAMES_OPTIONS.indexOf(ruleGames(selectedRule) as (typeof GAMES_OPTIONS)[number]),
   );
+  const noAdIndex = selectedRule.noAd ? 0 : 1;
   const venue =
     courtNames
       .map((s) => s.trim())
       .filter(Boolean)
       .join('、') || undefined;
+
+  function setRuleCode(targetGames: number, noAd: boolean) {
+    const code = MATCH_RULES.find(
+      (rule) => rule.targetGames === targetGames && rule.noAd === noAd,
+    )?.code;
+    if (code) setField('matchRuleCode', code);
+  }
 
   const loadDetail = useCallback(async () => {
     if (!editingId) return;
@@ -82,7 +99,6 @@ export default function ActivityCreatePage() {
       replace({
         mode: data.mode,
         level: data.level ?? '',
-        title: data.title,
         note: data.note ?? '',
         startDate: s.date,
         startTime: s.time,
@@ -142,7 +158,7 @@ export default function ActivityCreatePage() {
   function buildPayload(): CreateActivityRequest {
     return {
       mode: form.mode,
-      title: form.title.trim() || autoTitle,
+      title: autoTitle,
       level: form.level || undefined,
       note: form.note.trim() || undefined,
       startAt: iso(form.startDate, form.startTime),
@@ -225,14 +241,48 @@ export default function ActivityCreatePage() {
       <View className="ntr-card activity-create__preview">
         <View className="activity-create__thumb">
           <Text className="activity-create__thumb-title">
-            {form.level ? `【${form.level}】` : ''}
-            {activeMode.label}
+            {autoTitle || '填写信息后自动生成标题'}
           </Text>
-          <Text className="activity-create__thumb-sub">单打网球 · 以球会友</Text>
         </View>
-        <View className="activity-create__title-box">
-          <Text className="activity-create__title-label">自动生成标题</Text>
-          <Text className="activity-create__title-text">{autoTitle || '填写信息后自动生成'}</Text>
+      </View>
+
+      <View className="ntr-card ntr-card--padded ntr-section">
+        <View className="ntr-section-title">
+          <Text className="ntr-section-title__text">时间</Text>
+        </View>
+        <View className="activity-create__time-grid">
+          <DateTimeField
+            label="开始时间"
+            date={form.startDate}
+            time={form.startTime}
+            onDateChange={(v) => setField('startDate', v)}
+            onTimeChange={(v) => setField('startTime', v)}
+          />
+          <DateTimeField
+            label="结束时间"
+            date={form.endDate}
+            time={form.endTime}
+            onDateChange={(v) => setField('endDate', v)}
+            onTimeChange={(v) => setField('endTime', v)}
+          />
+        </View>
+      </View>
+
+      <View className="ntr-card ntr-card--padded ntr-section">
+        <View className="ntr-section-title">
+          <Text className="ntr-section-title__text">地点</Text>
+        </View>
+        <View className="ntr-field">
+          <Input
+            className="ntr-input"
+            value={form.locationName}
+            placeholder="地点名称"
+            placeholderClass="ntr-input__placeholder"
+            onInput={(e) => setField('locationName', e.detail.value)}
+          />
+        </View>
+        <View className="ntr-btn ntr-btn--ghost activity-create__map-btn" onClick={chooseLocation}>
+          <Text>选择位置</Text>
         </View>
       </View>
 
@@ -256,6 +306,40 @@ export default function ActivityCreatePage() {
 
       <View className="ntr-card ntr-card--padded ntr-section">
         <View className="ntr-section-title">
+          <Text className="ntr-section-title__text">赛制规则</Text>
+        </View>
+        <View className="ntr-field">
+          <Text className="ntr-field__label">局数</Text>
+          <View className="ntr-seg">
+            {GAMES_OPTIONS.map((games, index) => (
+              <View
+                key={games}
+                className={`ntr-seg__item ${gamesIndex === index ? 'ntr-seg__item--active' : ''}`}
+                onClick={() => setRuleCode(games, selectedRule.noAd)}
+              >
+                {GAMES_LABELS[games]}
+              </View>
+            ))}
+          </View>
+        </View>
+        <View className="ntr-field">
+          <Text className="ntr-field__label">计分</Text>
+          <View className="ntr-seg">
+            {DEUCE_OPTIONS.map((deuce, index) => (
+              <View
+                key={String(deuce.value)}
+                className={`ntr-seg__item ${noAdIndex === index ? 'ntr-seg__item--active' : ''}`}
+                onClick={() => setRuleCode(ruleGames(selectedRule), deuce.value)}
+              >
+                {deuce.label}
+              </View>
+            ))}
+          </View>
+        </View>
+      </View>
+
+      <View className="ntr-card ntr-card--padded ntr-section">
+        <View className="ntr-section-title">
           <Text className="ntr-section-title__text">赛事等级</Text>
         </View>
         <SliderField
@@ -267,47 +351,6 @@ export default function ActivityCreatePage() {
           valueText={form.level || '未选择'}
           onChange={(v) => setField('level', LEVEL_OPTIONS[v] ?? '')}
         />
-      </View>
-
-      <View className="ntr-card ntr-card--padded ntr-section">
-        <View className="ntr-section-title">
-          <Text className="ntr-section-title__text">时间</Text>
-        </View>
-        <View className="activity-create__time-grid">
-          <TimeField
-            label="开始时间"
-            date={form.startDate}
-            time={form.startTime}
-            onDateChange={(v) => setField('startDate', v)}
-            onTimeChange={(v) => setField('startTime', v)}
-          />
-          <TimeField
-            label="结束时间"
-            date={form.endDate}
-            time={form.endTime}
-            onDateChange={(v) => setField('endDate', v)}
-            onTimeChange={(v) => setField('endTime', v)}
-          />
-        </View>
-      </View>
-
-      <View className="ntr-card ntr-card--padded ntr-section">
-        <View className="ntr-section-title">
-          <Text className="ntr-section-title__text">地点</Text>
-        </View>
-        <View className="ntr-field">
-          <Text className="ntr-field__label">地点名称</Text>
-          <Input
-            className="ntr-input"
-            value={form.locationName}
-            placeholder="场馆名称"
-            placeholderClass="ntr-input__placeholder"
-            onInput={(e) => setField('locationName', e.detail.value)}
-          />
-        </View>
-        <View className="ntr-btn ntr-btn--ghost activity-create__map-btn" onClick={chooseLocation}>
-          <Text>选择地图</Text>
-        </View>
       </View>
 
       <View className="ntr-card ntr-card--padded ntr-section">
@@ -347,21 +390,6 @@ export default function ActivityCreatePage() {
             ))}
           </View>
         </View>
-      </View>
-
-      <View className="ntr-card ntr-card--padded ntr-section">
-        <View className="ntr-section-title">
-          <Text className="ntr-section-title__text">赛制规则</Text>
-        </View>
-        <SliderField
-          label="比分规则"
-          value={ruleIndex}
-          min={0}
-          max={MATCH_RULES.length - 1}
-          marks={RULE_SHORT_LABELS}
-          valueText={selectedRule.label}
-          onChange={(v) => setField('matchRuleCode', MATCH_RULES[v].code)}
-        />
       </View>
 
       {isKnockout && (

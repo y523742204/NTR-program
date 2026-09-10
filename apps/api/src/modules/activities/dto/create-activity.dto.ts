@@ -146,6 +146,6 @@ export function toCreateActivityData(dto: CreateActivityDto): CreateActivityData
     startAt: new Date(dto.startAt),
     endAt: new Date(dto.endAt),
     warmupMinutes: dto.warmupMinutes ?? 10,
-    matchRuleCode: dto.matchRuleCode ?? 'SIX_GAMES_6_TB',
+    matchRuleCode: dto.matchRuleCode ?? 'FOUR_GAMES_NO_AD',
   };
 }

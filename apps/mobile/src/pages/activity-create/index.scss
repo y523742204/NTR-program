@@ -51,16 +51,15 @@
   }
 
   &__thumb {
-    height: 180px;
+    min-height: 160px;
     border-radius: var(--ntr-radius-md);
     background:
       radial-gradient(120% 140% at 100% 0%, rgba(31, 157, 102, 0.18) 0%, rgba(31, 157, 102, 0) 55%),
       linear-gradient(135deg, #ffffff 0%, #f1f6f3 100%);
     border: 1px solid var(--ntr-line);
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 32px;
+    align-items: center;
+    padding: 24px 32px;
     overflow: hidden;
     position: relative;
   }
@@ -79,36 +78,10 @@
   &__thumb-title {
     position: relative;
     color: var(--ntr-text);
-    font-size: 44px;
+    font-size: 36px;
     font-weight: 800;
     letter-spacing: 1px;
-  }
-
-  &__thumb-sub {
-    position: relative;
-    margin-top: 10px;
-    color: var(--ntr-text-3);
-    font-size: 24px;
-  }
-
-  &__title-box {
-    margin-top: 20px;
-    padding: 16px 20px;
-    background: var(--ntr-surface-2);
-    border-radius: var(--ntr-radius-sm);
-  }
-
-  &__title-label {
-    display: block;
-    font-size: 22px;
-    color: var(--ntr-text-3);
-    margin-bottom: 6px;
-  }
-
-  &__title-text {
-    font-size: 26px;
-    color: var(--ntr-text);
-    font-weight: 600;
+    line-height: 1.4;
   }
 
   &__map-btn {

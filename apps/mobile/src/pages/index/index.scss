@@ -277,10 +277,15 @@
 }
 
 .act-card__meta-icon {
-  width: 28px;
+  width: 30px;
+  height: 30px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--ntr-text-3);
   margin-right: 8px;
+  line-height: 1;
 }
 
 .act-card__meta-text {

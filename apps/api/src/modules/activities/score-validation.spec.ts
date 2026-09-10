@@ -4,8 +4,8 @@ import { describe, it } from 'node:test';
 
 import { getMatchRule, getSinglesScoreError, normalizeSinglesScore } from '@ntr/shared';
 
-const sixGames = getMatchRule('SIX_GAMES_6_TB');
-const oneGame = getMatchRule('ONE_GAME');
+const sixGames = getMatchRule('SIX_GAMES_AD');
+const fourGames = getMatchRule('FOUR_GAMES_AD');
 
 describe('getSinglesScoreError', () => {
   it('6局制常规比分分出胜负', () => {
@@ -27,32 +27,31 @@ describe('getSinglesScoreError', () => {
     assert.equal(result.completed, false);
   });
 
-  it('6:6 需凭抢七小分决出胜者', () => {
-    const missing = getSinglesScoreError(sixGames, 6, 6, null, 5);
+  it('5:5 需凭抢七小分决出胜者', () => {
+    const missing = getSinglesScoreError(sixGames, 5, 5, null, 5);
     assert.equal(missing.ok, false);
-    const valid = getSinglesScoreError(sixGames, 6, 6, 7, 5);
+    const valid = getSinglesScoreError(sixGames, 5, 5, 7, 5);
     assert.equal(valid.ok, true);
     assert.equal(valid.completed, true);
     assert.equal(valid.winnerSide, 'A');
   });
 
   it('抢七需要至少领先 2 分', () => {
-    const result = getSinglesScoreError(sixGames, 6, 6, 7, 6);
+    const result = getSinglesScoreError(sixGames, 5, 5, 7, 6);
     assert.equal(result.ok, false);
     assert.equal(result.completed, false);
   });
 
   it('抢七小分不足 7 分不允许', () => {
-    const result = getSinglesScoreError(sixGames, 6, 6, 6, 4);
+    const result = getSinglesScoreError(sixGames, 5, 5, 6, 4);
     assert.equal(result.ok, false);
   });
 
-  it('一局决胜仅 1 局', () => {
-    const result = getSinglesScoreError(oneGame, 1, 0);
-    assert.equal(result.completed, true);
-    assert.equal(result.winnerSide, 'A');
-    const invalid = getSinglesScoreError(oneGame, 2, 0);
-    assert.equal(invalid.completed, false);
+  it('4局制 3:3 需凭抢七决出胜者', () => {
+    const valid = getSinglesScoreError(fourGames, 3, 3, 7, 4);
+    assert.equal(valid.ok, true);
+    assert.equal(valid.completed, true);
+    assert.equal(valid.winnerSide, 'A');
   });
 
   it('非法局数或负数被拒绝', () => {
@@ -82,9 +81,9 @@ describe('normalizeSinglesScore', () => {
     });
   });
   it('平分时保留抢七小分', () => {
-    assert.deepEqual(normalizeSinglesScore(6, 6, 7, 4), {
-      gamesA: 6,
-      gamesB: 6,
+    assert.deepEqual(normalizeSinglesScore(5, 5, 7, 4), {
+      gamesA: 5,
+      gamesB: 5,
       tiebreakA: 7,
       tiebreakB: 4,
     });

@@ -75,7 +75,7 @@ pnpm --filter @ntr/shared build
 pnpm --filter @ntr/api prisma:generate
 
 # ── 启动 API ──────────────────────────────────────────
-echo -e "${CYAN}[1/2]${NC} 启动 API 服务 (port 3000) ..."
+echo -e "${CYAN}[1/2]${NC} 启动 API 服务 (port 3100) ..."
 DATABASE_URL="$DATABASE_URL" pnpm --filter @ntr/api dev >"$API_LOG" 2>&1 &
 API_PID=$!
 echo -e "  ${GREEN}✓${NC} PID: $API_PID"

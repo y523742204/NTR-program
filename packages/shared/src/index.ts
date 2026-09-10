@@ -129,38 +129,79 @@ export function getBracketParent(
 
 export const MATCH_RULES = [
   {
-    code: 'SIX_GAMES_6_TB',
-    label: '6局抢先(6:6抢7)',
-    shortLabel: '6局抢7',
-    targetGames: 6,
-    majorLead: 2,
-    tiebreakAt: 6,
-    tiebreakMinPoints: 7,
-  },
-  {
-    code: 'FOUR_GAMES_4_TB',
-    label: '4局抢先(3:3抢7)',
-    shortLabel: '4局抢7',
+    code: 'FOUR_GAMES_NO_AD',
+    label: '四局金球',
+    shortLabel: '4局金球',
     targetGames: 4,
     majorLead: 2,
     tiebreakAt: 3,
     tiebreakMinPoints: 7,
+    noAd: true,
   },
   {
-    code: 'ONE_GAME',
-    label: '一局决胜',
-    shortLabel: '1局',
-    targetGames: 1,
-    majorLead: 1,
-    tiebreakAt: null,
-    tiebreakMinPoints: 0,
+    code: 'FOUR_GAMES_AD',
+    label: '四局占先',
+    shortLabel: '4局占先',
+    targetGames: 4,
+    majorLead: 2,
+    tiebreakAt: 3,
+    tiebreakMinPoints: 7,
+    noAd: false,
+  },
+  {
+    code: 'FIVE_GAMES_NO_AD',
+    label: '五局金球',
+    shortLabel: '5局金球',
+    targetGames: 5,
+    majorLead: 2,
+    tiebreakAt: 4,
+    tiebreakMinPoints: 7,
+    noAd: true,
+  },
+  {
+    code: 'FIVE_GAMES_AD',
+    label: '五局占先',
+    shortLabel: '5局占先',
+    targetGames: 5,
+    majorLead: 2,
+    tiebreakAt: 4,
+    tiebreakMinPoints: 7,
+    noAd: false,
+  },
+  {
+    code: 'SIX_GAMES_NO_AD',
+    label: '六局金球',
+    shortLabel: '6局金球',
+    targetGames: 6,
+    majorLead: 2,
+    tiebreakAt: 5,
+    tiebreakMinPoints: 7,
+    noAd: true,
+  },
+  {
+    code: 'SIX_GAMES_AD',
+    label: '六局占先',
+    shortLabel: '6局占先',
+    targetGames: 6,
+    majorLead: 2,
+    tiebreakAt: 5,
+    tiebreakMinPoints: 7,
+    noAd: false,
   },
 ] as const;
 export type MatchRuleCode = (typeof MATCH_RULES)[number]['code'];
 export type MatchRule = (typeof MATCH_RULES)[number];
 
+/** 旧版比分规则代码到新版规则的兼容映射。 */
+const LEGACY_MATCH_RULE_CODES: Record<string, MatchRuleCode> = {
+  SIX_GAMES_6_TB: 'SIX_GAMES_AD',
+  FOUR_GAMES_4_TB: 'FOUR_GAMES_AD',
+  ONE_GAME: 'FOUR_GAMES_NO_AD',
+};
+
 export function getMatchRule(code: string): MatchRule {
-  return MATCH_RULES.find((rule) => rule.code === code) ?? MATCH_RULES[0];
+  const mapped = LEGACY_MATCH_RULE_CODES[code] ?? code;
+  return MATCH_RULES.find((rule) => rule.code === mapped) ?? MATCH_RULES[0];
 }
 
 function isValidTiebreak(tiebreakMinPoints: number, a: number, b: number): boolean {
@@ -217,14 +258,6 @@ export function getSinglesScoreError(
     };
   }
   const lead = Math.abs(gamesA - gamesB) >= rule.majorLead;
-  if (rule.majorLead === 1) {
-    const winner = Math.max(gamesA, gamesB);
-    const loser = Math.min(gamesA, gamesB);
-    if (winner === rule.targetGames && loser === 0) {
-      return { ok: true, message: '', completed: true, winnerSide: gamesA > gamesB ? 'A' : 'B' };
-    }
-    return { ok: true, message: '', completed: false, winnerSide: null };
-  }
   const reachedTarget =
     gamesA >= rule.targetGames && gamesB >= rule.targetGames
       ? true

@@ -1,11 +1,10 @@
 import { useState } from 'react';
 
-import { ACTIVITY_MODES, MATCH_RULES, type ActivityMode, type MatchRuleCode } from '@ntr/shared';
+import { ACTIVITY_MODES, type ActivityMode, type MatchRuleCode } from '@ntr/shared';
 
 export interface ActivityForm {
   mode: ActivityMode;
   level: string;
-  title: string;
   note: string;
   startDate: string;
   startTime: string;
@@ -29,7 +28,7 @@ export interface LocationPick {
   longitude?: number;
 }
 
-export const LEVEL_OPTIONS = ['2.5', '3.0', '3.5', '4.0', '4.5'];
+export const LEVEL_OPTIONS = ['2.5', '3.0', '3.5', '4.0', '4.5', '5.0'];
 
 function todayDate(): string {
   const now = new Date();
@@ -41,7 +40,6 @@ function initForm(): ActivityForm {
   return {
     mode: ACTIVITY_MODES.ROUND_ROBIN,
     level: '3.0',
-    title: '',
     note: '',
     startDate: today,
     startTime: '09:00',
@@ -53,7 +51,7 @@ function initForm(): ActivityForm {
     venue: '',
     maxPlayers: 8,
     courtCount: 2,
-    matchRuleCode: MATCH_RULES[0].code,
+    matchRuleCode: 'FOUR_GAMES_NO_AD',
     groupCount: 2,
     qualifyPerGroup: 1,
     enableThirdPlace: false,
