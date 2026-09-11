@@ -38,6 +38,10 @@ export interface MatchAuditInput {
   reason?: string | null;
 }
 
+function userMatchFilter(userId: string): Prisma.ActivityMatchWhereInput {
+  return { OR: [{ playerA: { is: { userId } } }, { playerB: { is: { userId } } }] };
+}
+
 @Injectable()
 export class ActivityMatchRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -106,6 +110,37 @@ export class ActivityMatchRepository {
         playerA: { select: { id: true, participantName: true, gender: true, userId: true } },
         playerB: { select: { id: true, participantName: true, gender: true, userId: true } },
       },
+    });
+  }
+
+  /** 某用户参与的对局（分页，按时间倒序，含活动/轮次/双方球员）。 */
+  findMatchesByUser(userId: string, page: number, pageSize: number) {
+    return this.prisma.activityMatch.findMany({
+      where: userMatchFilter(userId),
+      include: {
+        activity: { select: { id: true, title: true } },
+        round: { select: { roundNumber: true } },
+        ...matchInclude,
+      },
+      orderBy: [{ startAt: 'desc' }, { createdAt: 'desc' }],
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+  }
+
+  /** 某用户参与的对局总数（可选仅统计已完成）。 */
+  countMatchesByUser(userId: string, completedOnly = false) {
+    return this.prisma.activityMatch.count({
+      where: completedOnly
+        ? { ...userMatchFilter(userId), recordStatus: 'COMPLETED' }
+        : userMatchFilter(userId),
+    });
+  }
+
+  /** 某用户获胜的已完成对局数。 */
+  countWinsByUser(userId: string) {
+    return this.prisma.activityMatch.count({
+      where: { recordStatus: 'COMPLETED', winner: { is: { userId } } },
     });
   }
 

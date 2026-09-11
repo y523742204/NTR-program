@@ -462,6 +462,7 @@ export interface ActivitySignupResponse {
   id: string;
   userId: string | null;
   participantName: string;
+  avatarUrl: string | null;
   gender: ParticipantGender | null;
   status: SignupStatus;
   isMe: boolean;
@@ -673,26 +674,47 @@ export interface KnockoutBracketResponse {
   runnerUp: MatchPlayerResponse | null;
 }
 
-export interface MyMatchItemResponse {
+export interface PublicUserProfileResponse {
+  userId: string;
+  name: string;
+  avatarUrl: string | null;
+  level: PlayerLevel | null;
+  gender: ParticipantGender | null;
+}
+
+export interface UserRecordsSummary {
+  played: number;
+  wins: number;
+  losses: number;
+  /** 胜率百分比（0-100 整数）。 */
+  winRate: number;
+}
+
+export interface UserMatchItemResponse {
   matchId: string;
   activityId: string;
   activityTitle: string;
   stage: MatchStage | null;
   roundNumber: number | null;
   courtName: string | null;
-  myParticipantName: string;
+  subjectUserId: string;
+  subjectParticipantName: string;
+  subjectAvatarUrl: string | null;
+  opponentUserId: string | null;
   opponentName: string;
   opponentAvatarUrl: string | null;
-  myGames: number | null;
+  subjectGames: number | null;
   opponentGames: number | null;
-  isWinner: boolean | null;
+  subjectIsWinner: boolean | null;
   recordStatus: MatchScoreRecordStatus;
   confirmationState: MatchScoreConfirmationState;
   startAt: string | null;
 }
 
-export interface MyMatchListResponse {
-  items: MyMatchItemResponse[];
+export interface UserRecordsResponse {
+  profile: PublicUserProfileResponse;
+  summary: UserRecordsSummary;
+  items: UserMatchItemResponse[];
   total: number;
   page: number;
   pageSize: number;

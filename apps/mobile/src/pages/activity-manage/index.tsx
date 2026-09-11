@@ -7,6 +7,8 @@ import type { ActivityDetailResponse, ScheduleResponse } from '@ntr/shared';
 import { apiRequest } from '../../services/api';
 import { getActivityPhase, PHASE_LABEL } from '../../utils/format';
 
+import { THEME_COLOR } from '../../constants/theme';
+
 import './index.scss';
 
 type StatusVariant = 'primary' | 'muted' | 'danger';
@@ -56,7 +58,7 @@ export default function ActivityManagePage() {
         const modal = await Taro.showModal({
           title: '重新生成赛程',
           content: confirmText,
-          confirmColor: '#FF5C5B',
+          confirmColor: THEME_COLOR.DANGER,
         });
         if (!modal.confirm) return;
       }
@@ -95,7 +97,7 @@ export default function ActivityManagePage() {
       const modal = await Taro.showModal({
         title: '移除该报名',
         content: '确认将该选手移出本次赛事？',
-        confirmColor: '#FF5C5B',
+        confirmColor: THEME_COLOR.DANGER,
       });
       if (!modal.confirm) return;
       try {

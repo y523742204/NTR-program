@@ -9,6 +9,9 @@ import { getAuthSession } from '../../services/auth-session';
 import { requireLogin } from '../../services/guard';
 import { formatDate } from '../../utils/format';
 
+import { THEME_COLOR } from '../../constants/theme';
+import UserAvatar from '../../components/user-avatar';
+
 import './index.scss';
 
 const PAGE_SIZE = 20;
@@ -81,7 +84,7 @@ export default function AdminUsersPage() {
     const modal = await Taro.showModal({
       title: '设为管理员',
       content: `确认将「${user.name}」设为管理员？`,
-      confirmColor: '#1f9d66',
+      confirmColor: THEME_COLOR.PRIMARY,
     });
     if (!modal.confirm) return;
     setBusyUserId(user.userId);
@@ -179,9 +182,12 @@ export default function AdminUsersPage() {
         {items.map((user) => (
           <View key={user.userId} className="ntr-row au-user">
             <View className="au-user__main">
-              <View className="ntr-avatar au-user__avatar">
-                <Text>{(user.name || '?').slice(0, 1)}</Text>
-              </View>
+              <UserAvatar
+                userId={user.userId}
+                name={user.name}
+                avatarUrl={user.avatarUrl}
+                className="au-user__avatar"
+              />
               <View className="au-user__info">
                 <View className="au-user__line">
                   <Text className="au-user__name">{user.name}</Text>

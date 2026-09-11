@@ -1,11 +1,13 @@
 import Taro, { useDidShow, useReachBottom } from '@tarojs/taro';
-import { Text, View } from '@tarojs/components';
+import { Image, Text, View } from '@tarojs/components';
 import { Clock, Location } from '@taroify/icons';
 import { useCallback, useState } from 'react';
 
-import type { MyMatchItemResponse, MyMatchListResponse } from '@ntr/shared';
+import type { UserMatchItemResponse, UserRecordsResponse } from '@ntr/shared';
 
-import { apiRequest } from '../../services/api';
+import UserAvatar from '../../components/user-avatar';
+import { apiRequest, resolveApiAssetUrl } from '../../services/api';
+import { getAuthSession } from '../../services/auth-session';
 import { requireLogin } from '../../services/guard';
 import { stageLabel } from '../../utils/format';
 
@@ -13,7 +15,7 @@ import './index.scss';
 
 const PAGE_SIZE = 10;
 
-function statusTag(item: MyMatchItemResponse): { text: string; tone: string } | null {
+function statusTag(item: UserMatchItemResponse): { text: string; tone: string } | null {
   if (item.recordStatus === 'UNPLAYED') return { text: '未打', tone: 'ntr-tag--danger' };
   if (item.recordStatus === 'PENDING') return { text: '待录入', tone: 'ntr-tag--muted' };
   if (item.confirmationState === 'PENDING_CONFIRM')
@@ -22,19 +24,19 @@ function statusTag(item: MyMatchItemResponse): { text: string; tone: string } | 
   return { text: '已定', tone: 'ntr-tag--primary' };
 }
 
-function stageText(item: MyMatchItemResponse): string | null {
+function stageText(item: UserMatchItemResponse): string | null {
   if (item.stage) return stageLabel(item.stage);
   if (item.roundNumber != null) return `第${item.roundNumber}轮`;
   return null;
 }
 
-function MatchCard({ match }: { match: MyMatchItemResponse }) {
+function MatchCard({ match, isSelf }: { match: UserMatchItemResponse; isSelf: boolean }) {
   const stage = stageText(match);
   const status = statusTag(match);
-  const played = match.myGames != null && match.opponentGames != null;
-  const won = match.isWinner === true;
-  const lost = match.isWinner === false;
-  const meClass = won
+  const played = match.subjectGames != null && match.opponentGames != null;
+  const won = match.subjectIsWinner === true;
+  const lost = match.subjectIsWinner === false;
+  const subjectClass = won
     ? 'rec-card__name--win'
     : lost
       ? 'rec-card__name--loss'
@@ -54,25 +56,31 @@ function MatchCard({ match }: { match: MyMatchItemResponse }) {
       </View>
       <View className="rec-card__body">
         <View className="rec-card__side">
-          <View className="ntr-avatar rec-card__avatar">
-            <Text>{match.myParticipantName.slice(0, 1)}</Text>
-          </View>
+          <UserAvatar
+            userId={match.subjectUserId}
+            name={match.subjectParticipantName}
+            avatarUrl={match.subjectAvatarUrl}
+            className="rec-card__avatar"
+          />
           <View className="rec-card__player">
-            <Text className={`rec-card__name ${meClass}`}>{match.myParticipantName}</Text>
-            <Text className="rec-card__me-tag">我</Text>
+            <Text className={`rec-card__name ${subjectClass}`}>{match.subjectParticipantName}</Text>
+            {isSelf && <Text className="rec-card__me-tag">我</Text>}
           </View>
         </View>
         <Text className={`rec-card__score ${scoreClass}`}>
-          {played ? `${match.myGames}:${match.opponentGames}` : 'VS'}
+          {played ? `${match.subjectGames}:${match.opponentGames}` : 'VS'}
         </Text>
         <View className="rec-card__side rec-card__side--right">
           <View className="rec-card__player rec-card__player--right">
             <Text className="rec-card__name">{match.opponentName}</Text>
             <Text className="rec-card__me-tag">对手</Text>
           </View>
-          <View className="ntr-avatar rec-card__avatar">
-            <Text>{match.opponentName.slice(0, 1)}</Text>
-          </View>
+          <UserAvatar
+            userId={match.opponentUserId}
+            name={match.opponentName}
+            avatarUrl={match.opponentAvatarUrl}
+            className="rec-card__avatar"
+          />
         </View>
       </View>
       <View className="rec-card__foot">
@@ -86,7 +94,7 @@ function MatchCard({ match }: { match: MyMatchItemResponse }) {
           {match.startAt && (
             <View className="rec-card__meta-item">
               <Clock className="rec-card__meta-icon" size="20" />
-              <Text>{match.startAt.slice(11, 16)}</Text>
+              <Text>{match.startAt.slice(5, 16).replace('T', ' ')}</Text>
             </View>
           )}
         </View>
@@ -96,32 +104,50 @@ function MatchCard({ match }: { match: MyMatchItemResponse }) {
   );
 }
 
-export default function MyMatchesPage() {
-  const [items, setItems] = useState<MyMatchItemResponse[]>([]);
+export default function UserRecordsPage() {
+  const routeUserId = Taro.getCurrentInstance().router?.params?.userId;
+  const targetUserId = routeUserId ? String(routeUserId) : undefined;
+  const sessionUserId = getAuthSession()?.user.id ?? null;
+  const userId = targetUserId ?? sessionUserId;
+  const isSelf = !targetUserId || targetUserId === sessionUserId;
+
+  const [data, setData] = useState<UserRecordsResponse | null>(null);
+  const [items, setItems] = useState<UserMatchItemResponse[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const fetchPage = useCallback(async (targetPage: number, append: boolean) => {
-    setLoading(true);
-    try {
-      const data = await apiRequest<MyMatchListResponse>({
-        path: `/activities/matches/me?page=${targetPage}&pageSize=${PAGE_SIZE}`,
-      });
-      setItems((prev) => (append ? [...prev, ...data.items] : data.items));
-      setTotal(data.total);
-      setPage(targetPage);
-    } catch {
-      void Taro.showToast({ title: '加载失败', icon: 'none' });
-    } finally {
-      setLoading(false);
-      setInitialLoading(false);
-    }
-  }, []);
+  const fetchPage = useCallback(
+    async (targetPage: number, append: boolean) => {
+      if (!userId) return;
+      setLoading(true);
+      try {
+        const res = await apiRequest<UserRecordsResponse>({
+          path: `/activities/users/${userId}/records?page=${targetPage}&pageSize=${PAGE_SIZE}`,
+        });
+        setData(res);
+        setItems((prev) => (append ? [...prev, ...res.items] : res.items));
+        setTotal(res.total);
+        setPage(targetPage);
+        if (!isSelf) void Taro.setNavigationBarTitle({ title: `${res.profile.name}的战绩` });
+      } catch (err) {
+        setError((err as { message?: string }).message ?? '加载失败');
+      } finally {
+        setLoading(false);
+        setInitialLoading(false);
+      }
+    },
+    [userId, isSelf],
+  );
 
   useDidShow(() => {
-    if (!requireLogin()) return;
+    if (!userId) {
+      requireLogin();
+      return;
+    }
+    if (isSelf) void Taro.setNavigationBarTitle({ title: '我的战绩' });
     void fetchPage(1, false);
   });
 
@@ -129,46 +155,85 @@ export default function MyMatchesPage() {
     if (!loading && items.length < total) void fetchPage(page + 1, true);
   });
 
-  const wins = items.filter((item) => item.isWinner === true).length;
-  const losses = items.filter((item) => item.isWinner === false).length;
-  const hasRecord = !initialLoading && items.length > 0;
+  if (initialLoading) {
+    return (
+      <View className="ntr-page">
+        <View className="ntr-empty">
+          <View className="ntr-empty__icon">…</View>
+          <Text className="ntr-empty__text">加载中</Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View className="ntr-page">
+        <View className="ntr-empty">
+          <View className="ntr-empty__icon">⚠</View>
+          <Text className="ntr-empty__text">{error}</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View className="ntr-page">
-      {hasRecord && (
+      {data && (
+        <View className="ntr-card records-head">
+          <View className="ntr-avatar records-head__avatar">
+            {data.profile.avatarUrl ? (
+              <Image src={resolveApiAssetUrl(data.profile.avatarUrl)} mode="aspectFill" />
+            ) : (
+              <Text>{data.profile.name.slice(0, 1)}</Text>
+            )}
+          </View>
+          <View className="records-head__info">
+            <View className="records-head__name-row">
+              <Text className="records-head__name">{data.profile.name}</Text>
+              {data.profile.level && (
+                <Text className="ntr-tag ntr-tag--muted">{data.profile.level}</Text>
+              )}
+            </View>
+            <Text className="records-head__meta">
+              {isSelf ? '我的历史战绩' : '历史战绩'} · 已决 {data.summary.played} 场
+            </Text>
+          </View>
+        </View>
+      )}
+
+      {data && (
         <View className="ntr-card matches-summary">
           <View className="matches-summary__item">
-            <Text className="matches-summary__num matches-summary__num--win">{wins}</Text>
+            <Text className="matches-summary__num matches-summary__num--win">
+              {data.summary.wins}
+            </Text>
             <Text className="matches-summary__label">胜</Text>
           </View>
           <View className="matches-summary__item">
-            <Text className="matches-summary__num matches-summary__num--loss">{losses}</Text>
+            <Text className="matches-summary__num matches-summary__num--loss">
+              {data.summary.losses}
+            </Text>
             <Text className="matches-summary__label">负</Text>
           </View>
           <View className="matches-summary__item">
-            <Text className="matches-summary__num">{wins + losses}</Text>
-            <Text className="matches-summary__label">已决</Text>
+            <Text className="matches-summary__num">{data.summary.winRate}%</Text>
+            <Text className="matches-summary__label">胜率</Text>
           </View>
         </View>
       )}
 
       <View className="matches-list">
-        {initialLoading && (
-          <View className="ntr-empty">
-            <View className="ntr-empty__icon">…</View>
-            <Text className="ntr-empty__text">加载中</Text>
-          </View>
-        )}
-        {!initialLoading && items.length === 0 && (
+        {items.length === 0 && (
           <View className="ntr-empty">
             <View className="ntr-empty__icon">▢</View>
-            <Text className="ntr-empty__text">还打过比赛</Text>
+            <Text className="ntr-empty__text">还没有比赛记录</Text>
           </View>
         )}
         {items.map((match) => (
-          <MatchCard key={match.matchId} match={match} />
+          <MatchCard key={match.matchId} match={match} isSelf={isSelf} />
         ))}
-        {!initialLoading && items.length > 0 && (
+        {items.length > 0 && (
           <View className="matches-list__foot">
             <Text className="ntr-text-3">
               {items.length >= total && total > 0 ? '没有更多了' : '上拉加载更多…'}

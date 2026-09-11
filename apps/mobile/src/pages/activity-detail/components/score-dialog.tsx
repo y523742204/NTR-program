@@ -12,6 +12,8 @@ import {
 
 import { apiRequest } from '../../../services/api';
 
+import { THEME_COLOR } from '../../../constants/theme';
+
 import './score-dialog.scss';
 
 interface ScoreDialogProps {
@@ -118,7 +120,7 @@ export default function ScoreDialog({
     const modal = (await Taro.showModal({
       title: '对比分提出异议',
       content: '请说明争议原因',
-      confirmColor: '#FF5C5B',
+      confirmColor: THEME_COLOR.DANGER,
       editable: true,
     } as never)) as { confirm: boolean; content?: string };
     if (!modal.confirm || !modal.content?.trim()) return;
@@ -133,7 +135,7 @@ export default function ScoreDialog({
     const modal = await Taro.showModal({
       title: '标记本场未打',
       content: '确认后该对局不计入排名',
-      confirmColor: '#FF5C5B',
+      confirmColor: THEME_COLOR.DANGER,
     });
     if (!modal.confirm) return;
     if (await run('/unplayed', 'POST', {})) {

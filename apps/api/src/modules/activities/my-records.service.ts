@@ -1,71 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
-import type { MyMatchListResponse, MySignupListResponse } from '@ntr/shared';
+import type {
+  MySignupListResponse,
+  PlayerLevel,
+  PublicUserProfileResponse,
+  UserMatchItemResponse,
+  UserRecordsResponse,
+} from '@ntr/shared';
 
 import { PrismaService } from '../../database/prisma.service';
-import type { AuthenticatedUser } from '../auth/auth.types';
+import { ActivityMatchRepository } from './activity-match.repository';
 
-const MATCH_LIST_INCLUDE = {
-  activity: { select: { id: true, title: true } },
-  round: { select: { roundNumber: true } },
-  playerA: { include: { user: { select: { avatarUrl: true } } } },
-  playerB: { include: { user: { select: { avatarUrl: true } } } },
-} as const;
+type UserMatchRow = Awaited<ReturnType<ActivityMatchRepository['findMatchesByUser']>>[number];
 
 @Injectable()
 export class MyRecordsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly matches: ActivityMatchRepository,
+  ) {}
 
-  async myMatches(
-    actor: AuthenticatedUser,
+  /** 任意用户的公开资料与历史对局（含胜负汇总）。 */
+  async getUserRecords(
+    userId: string,
     page: number,
     pageSize: number,
-  ): Promise<MyMatchListResponse> {
-    const where = {
-      OR: [{ playerA: { is: { userId: actor.id } } }, { playerB: { is: { userId: actor.id } } }],
-    };
-    const [matches, total] = await Promise.all([
-      this.prisma.activityMatch.findMany({
-        where,
-        include: MATCH_LIST_INCLUDE,
-        orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-      }),
-      this.prisma.activityMatch.count({ where }),
+  ): Promise<UserRecordsResponse> {
+    const profile = await this.getPublicProfile(userId);
+    const [rows, total, played, wins] = await Promise.all([
+      this.matches.findMatchesByUser(userId, page, pageSize),
+      this.matches.countMatchesByUser(userId),
+      this.matches.countMatchesByUser(userId, true),
+      this.matches.countWinsByUser(userId),
     ]);
-
-    const items = matches.map((match) => {
-      const mine = match.playerA?.userId === actor.id ? 'A' : 'B';
-      const mySignupId = mine === 'A' ? match.playerAId : match.playerBId;
-      const myName = mine === 'A' ? match.playerA?.participantName : match.playerB?.participantName;
-      const opponent = mine === 'A' ? match.playerB : match.playerA;
-      const myGames = mine === 'A' ? match.playerAGames : match.playerBGames;
-      const opponentGames = mine === 'A' ? match.playerBGames : match.playerAGames;
-      return {
-        matchId: match.id,
-        activityId: match.activityId,
-        activityTitle: match.activity.title,
-        stage: match.stage,
-        roundNumber: match.round?.roundNumber ?? null,
-        courtName: match.courtName,
-        myParticipantName: myName ?? '未知选手',
-        opponentName: opponent?.participantName ?? '待定',
-        opponentAvatarUrl: opponent?.user?.avatarUrl ?? null,
-        myGames,
-        opponentGames,
-        isWinner: match.winnerId != null ? match.winnerId === mySignupId : null,
-        recordStatus: match.recordStatus,
-        confirmationState: match.confirmationState,
-        startAt: match.startAt?.toISOString() ?? null,
-      };
-    });
-
-    return { items, total, page, pageSize };
+    const losses = Math.max(0, played - wins);
+    return {
+      profile,
+      summary: {
+        played,
+        wins,
+        losses,
+        winRate: played > 0 ? Math.round((wins / played) * 100) : 0,
+      },
+      items: rows.map((match) => this.mapMatch(match, userId)),
+      total,
+      page,
+      pageSize,
+    };
   }
 
   async mySignups(
-    actor: AuthenticatedUser,
+    actor: { id: string },
     page: number,
     pageSize: number,
   ): Promise<MySignupListResponse> {
@@ -107,5 +92,48 @@ export class MyRecordsService {
       schedulePublished: Boolean(signup.activity.schedulePublishedAt),
     }));
     return { items, total, page, pageSize };
+  }
+
+  private async getPublicProfile(userId: string): Promise<PublicUserProfileResponse> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, name: true, avatarUrl: true, level: true, gender: true },
+    });
+    if (!user) throw new NotFoundException('用户不存在');
+    return {
+      userId: user.id,
+      name: user.name?.trim() || '未知选手',
+      avatarUrl: user.avatarUrl,
+      level: (user.level as PlayerLevel | null) ?? null,
+      gender: user.gender,
+    };
+  }
+
+  private mapMatch(match: UserMatchRow, userId: string): UserMatchItemResponse {
+    const subjectIsA = match.playerA?.userId === userId;
+    const subject = subjectIsA ? match.playerA : match.playerB;
+    const opponent = subjectIsA ? match.playerB : match.playerA;
+    const subjectGames = subjectIsA ? match.playerAGames : match.playerBGames;
+    const opponentGames = subjectIsA ? match.playerBGames : match.playerAGames;
+    return {
+      matchId: match.id,
+      activityId: match.activityId,
+      activityTitle: match.activity.title,
+      stage: match.stage,
+      roundNumber: match.round?.roundNumber ?? null,
+      courtName: match.courtName,
+      subjectUserId: userId,
+      subjectParticipantName: subject?.participantName ?? '未知选手',
+      subjectAvatarUrl: subject?.user?.avatarUrl ?? null,
+      opponentUserId: opponent?.userId ?? null,
+      opponentName: opponent?.participantName ?? '待定',
+      opponentAvatarUrl: opponent?.user?.avatarUrl ?? null,
+      subjectGames,
+      opponentGames,
+      subjectIsWinner: match.winnerId != null ? match.winnerId === subject?.id : null,
+      recordStatus: match.recordStatus,
+      confirmationState: match.confirmationState,
+      startAt: match.startAt?.toISOString() ?? null,
+    };
   }
 }

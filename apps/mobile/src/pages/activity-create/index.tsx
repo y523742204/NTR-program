@@ -13,6 +13,7 @@ import {
 
 import { apiRequest } from '../../services/api';
 import { requireLogin } from '../../services/guard';
+import { THEME_COLOR } from '../../constants/theme';
 import KnockoutOptions from './components/knockout-options';
 import SliderField from './components/slider-field';
 import DateTimeField from './components/datetime-field';
@@ -197,7 +198,7 @@ export default function ActivityCreatePage() {
       content: isEdit
         ? '确认保存赛事修改？保存后自动更新。'
         : '确认发布该赛事？确认后选手即可报名。',
-      confirmColor: '#1f9d66',
+      confirmColor: THEME_COLOR.PRIMARY,
     });
     if (!modal.confirm) return;
     setSubmitting(true);

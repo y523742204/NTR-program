@@ -1,5 +1,7 @@
 import { Slider, Text, View } from '@tarojs/components';
 
+import { THEME_COLOR } from '../../../../constants/theme';
+
 import './index.scss';
 
 interface SliderFieldProps {
@@ -38,8 +40,8 @@ export default function SliderField({
         max={max}
         step={step}
         value={value}
-        activeColor="#1f9d66"
-        backgroundColor="#e4e7ea"
+        activeColor={THEME_COLOR.PRIMARY}
+        backgroundColor={THEME_COLOR.SURFACE_3}
         blockSize={BLOCK_SIZE}
         onChange={(e) => onChange(Number(e.detail.value))}
       />

@@ -1,5 +1,44 @@
+.records-head {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+}
+
+.records-head__avatar {
+  flex-shrink: 0;
+  width: 96px;
+  height: 96px;
+  font-size: 34px;
+}
+
+.records-head__info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.records-head__name-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.records-head__name {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--ntr-text);
+}
+
+.records-head__meta {
+  font-size: 24px;
+  color: var(--ntr-text-3);
+}
+
 .matches-summary {
   display: flex;
+  margin-top: 20px;
   padding: 24px 0;
 }
 

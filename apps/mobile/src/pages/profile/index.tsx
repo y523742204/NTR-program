@@ -14,6 +14,7 @@ import {
 } from '../../services/auth-session';
 import { refreshCurrentUser } from '../../services/current-user';
 import { HOME_TABS, isHomeTabRoute, switchHomeTab } from '../../services/tab-navigation';
+import { THEME_COLOR } from '../../constants/theme';
 
 import './index.scss';
 
@@ -47,7 +48,7 @@ export default function ProfilePage() {
     const modal = await Taro.showModal({
       title: '退出登录',
       content: '确认退出当前账号？',
-      confirmColor: '#FF6B5E',
+      confirmColor: THEME_COLOR.DANGER,
     });
     if (!modal.confirm) return;
     try {

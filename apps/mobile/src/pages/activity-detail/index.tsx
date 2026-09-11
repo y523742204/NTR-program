@@ -18,6 +18,8 @@ import { getAuthSession } from '../../services/auth-session';
 import { requireLogin, requireProfile } from '../../services/guard';
 import { formatRange, modeLabel } from '../../utils/format';
 
+import { THEME_COLOR } from '../../constants/theme';
+import UserAvatar from '../../components/user-avatar';
 import ScoreDialog from './components/score-dialog';
 import StandingsView from './components/standings-view';
 import BracketView from './components/bracket-view';
@@ -132,7 +134,7 @@ export default function ActivityDetailPage() {
     const modal = await Taro.showModal({
       title: '移除该报名',
       content: '确认将该选手移出本次赛事？',
-      confirmColor: '#FF5C5B',
+      confirmColor: THEME_COLOR.DANGER,
     });
     if (!modal.confirm) return;
     try {
@@ -150,7 +152,7 @@ export default function ActivityDetailPage() {
     const modal = await Taro.showModal({
       title: '删除赛事',
       content: '删除后赛事及其报名、赛程、比分将全部清除且不可恢复，确认删除？',
-      confirmColor: '#FF5C5B',
+      confirmColor: THEME_COLOR.DANGER,
     });
     if (!modal.confirm) return;
     try {
@@ -271,9 +273,12 @@ export default function ActivityDetailPage() {
         <View className="detail-roster__grid">
           {detail.signups.map((signup) => (
             <View key={signup.id} className="detail-roster__item">
-              <View className="ntr-avatar detail-roster__avatar">
-                <Text>{(signup.participantName || '?').slice(0, 1)}</Text>
-              </View>
+              <UserAvatar
+                userId={signup.userId}
+                name={signup.participantName}
+                avatarUrl={signup.avatarUrl}
+                className="detail-roster__avatar"
+              />
               <Text className="detail-roster__name">{signup.participantName}</Text>
               {signup.status === 'WAITLISTED' && (
                 <Text className="ntr-tag ntr-tag--warn">候补</Text>

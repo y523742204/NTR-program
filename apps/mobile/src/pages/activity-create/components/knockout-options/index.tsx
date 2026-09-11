@@ -1,6 +1,9 @@
 import { Switch, Text, View } from '@tarojs/components';
 
+import { THEME_COLOR } from '../../../../constants/theme';
 import StepperField from '../stepper-field';
+
+import './index.scss';
 
 interface KnockoutOptionsProps {
   groupCount: number;
@@ -43,7 +46,7 @@ export default function KnockoutOptions({
         <Text className="ntr-field__label">设置三四名决赛</Text>
         <Switch
           checked={enableThirdPlace}
-          color="#1f9d66"
+          color={THEME_COLOR.PRIMARY}
           onChange={(e) => onEnableThirdPlace(e.detail.value)}
         />
       </View>
