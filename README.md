@@ -108,14 +108,19 @@ pnpm build:mobile:prod # 编译指向prod的前端小程序
 `local` 指向本机 API，`test` / `prod` 分别指向远端测试 / 生产服务器。
 每种模式均有 **watch（开发）** 与 **build（一次性构建）** 两种命令：
 
-| model | API |
-| local | `http://127.0.0.1:3100` |
-| test | `https://test-server.nygtennis.club` |
-| prod | `https://server.nygtennis.club` |
+| model | API                                  |
+| ----- | ------------------------------------ |
+| local | `http://127.0.0.1:3100`              |
+| test  | `https://test-server.nygtennis.club` |
+| prod  | `https://server.nygtennis.club`      |
 
 产物均输出到 `apps/mobile/dist/weapp`。
 
 登录管理员账户通过：
+
+```js
+wx.switchAccount({ name: '测试', role: 'ADMIN' });
+```
 
 ### API 构建
 
